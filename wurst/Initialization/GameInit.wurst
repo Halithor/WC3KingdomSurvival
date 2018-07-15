@@ -1,0 +1,55 @@
+package GameInit
+
+import GenerateTerrain
+import Globals
+import RegisterEvents
+import ClosureTimers
+import Util
+
+
+init
+    kPlayer_Kingdom.setName("The Kingdom")
+    setCamBounds()    
+    generateTerrain()
+    setAlliances()
+    createUnits()
+    if kPlayer_King.getName() == "Halithor" and getPlayersIngame() == 1
+        let kingVision = CreateFogModifierRectSimple(kPlayer_King, FOG_OF_WAR_VISIBLE, GetPlayableMapRect(), true)
+            ..start()
+        doAfter(300) ->
+            kingVision.stop()
+            kingVision.destr()
+    registerPlayerUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_START) ->
+        GetConstructingStructure().setOwner(kPlayer_Kingdom, true)
+
+// King gets vision of all, and all get vision of king. But the villagers don't share vision.
+function setAlliances()
+    MultiboardSuppressDisplay(true)
+    SetPlayerAllianceStateBJ(kPlayer_Kingdom, kPlayer_King, bj_ALLIANCE_ALLIED_ADVUNITS)
+    SetPlayerAllianceStateBJ(kPlayer_King, kPlayer_Kingdom, bj_ALLIANCE_ALLIED_VISION)
+    // Make all the human players ally red, the king.
+    for i = 1 to bj_MAX_PLAYER_SLOTS
+        if players[i].isIngame()
+            SetPlayerAllianceStateBJ(players[i], kPlayer_King, bj_ALLIANCE_ALLIED_VISION)
+            SetPlayerAllianceStateBJ(kPlayer_King, players[i], bj_ALLIANCE_ALLIED_VISION)
+            SetPlayerAllianceStateBJ(kPlayer_Kingdom, players[i], bj_ALLIANCE_ALLIED_ADVUNITS)
+    
+    
+    // MultiboardSuppressDisplay(false)
+
+function setCamBounds()
+    SetCameraBoundsToRect(kRect_PlayArea)
+
+function createUnits()
+    // TODO create king
+    createUnit(kPlayer_King, kUID_Villager, kRect_PlayArea.getCenter(), GetRandomDirectionDeg().asAngleDegrees())
+                ..setProperName(kPlayer_King.getName())
+                ..addItemById(kIID_Building_Castle)
+                ..setName("King")
+    SetCameraPositionForPlayer(kPlayer_King, kRect_PlayArea.getCenter().x, kRect_PlayArea.getCenter().y)
+    for i = 1 to bj_MAX_PLAYER_SLOTS
+        if players[i].isIngame()
+            let pos = kRect_PlayArea.randomPoint()
+            createUnit(players[i], kUID_Villager, pos, GetRandomDirectionDeg().asAngleDegrees())
+                ..setProperName(players[i].getName())
+            SetCameraPositionForPlayer(players[i], pos.x, pos.y)

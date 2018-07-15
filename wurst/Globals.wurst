@@ -1,0 +1,37 @@
+package Globals
+
+import ObjectIdGenerator
+import ObjectIds
+
+constant cameraBoundOffset = 44 * 128
+public constant kRect_PlayArea = Rect(GetPlayableMapRect().getCenter().x - cameraBoundOffset, GetPlayableMapRect().getCenter().y - cameraBoundOffset, GetPlayableMapRect().getCenter().x + cameraBoundOffset, GetPlayableMapRect().getCenter().y + cameraBoundOffset)
+
+public constant kPlayer_Kingdom = players[9]
+public constant kPlayer_King = players[0]
+
+
+public constant kUID_Villager = compiletime(HERO_ID_GEN.next())
+public constant kUID_King = compiletime(HERO_ID_GEN.next())
+
+// Buildings
+public constant kUID_Castle = compiletime(UNIT_ID_GEN.next())
+
+// abilities
+// hero abilities
+public constant kAID_HeroConstitution = compiletime(ABIL_ID_GEN.next())
+public constant kAID_HeroDexterity = compiletime(ABIL_ID_GEN.next())
+public constant kAID_HeroIntellect = compiletime(ABIL_ID_GEN.next())
+public constant kAID_HeroLuck = compiletime(ABIL_ID_GEN.next())
+
+// inventory/shopping
+public constant kAID_Inv = compiletime(ABIL_ID_GEN.next())
+public constant kAID_InvBasic = compiletime(ABIL_ID_GEN.next())
+public constant kAID_ShopSharing = 'A000'
+public constant kAID_ShopPurchaseItem = 'Apit'
+
+// ============= Items =============
+public constant kIID_Building_Castle = compiletime(ITEM_ID_GEN.next())
+
+// helpers
+public function getHeroAbilities() returns string
+    return commaList(kAID_HeroConstitution, kAID_HeroDexterity, kAID_HeroIntellect, kAID_HeroLuck)

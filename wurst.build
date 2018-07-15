@@ -1,0 +1,10 @@
+---
+projectName: "KingdomSurvival"
+dependencies:
+- "https://github.com/wurstscript/wurstStdlib2"
+- "https://github.com/Halithor/HalithorsRecipeSystem"
+buildMapData:
+  name: "Kingdom Survival v0.01"
+  fileName: "KingdomSurvival_v0.01"
+  author: "Halithor"
+  playerCount: 8

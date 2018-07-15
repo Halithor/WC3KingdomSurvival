@@ -1,0 +1,119 @@
+package HeroAbilityDefinitions
+
+import AbilityObjEditing
+import Globals
+import TooltipUtils
+import ObjectIdGenerator
+import ObjectIds
+import BuffObjEditing
+import Assets
+
+function constArmorBonus(int lvl) returns real
+    return (lvl div 2) + 1.0
+function constDmgReduced(int lvl) returns real
+    var val = lvl * 0.02
+    if lvl == 10
+        val += 0.05
+    return val
+function constHpRegen(int lvl) returns real
+    var val = lvl * 0.15
+    if lvl > 8
+        val += (lvl - 8) * 0.10
+    return val
+
+function dexIAS(int lvl) returns real
+    var val = 0.0
+    switch lvl
+        case 1
+            val = 0.03
+        case 2
+            val = 0.06
+        case 3
+            val = 0.1
+        case 4
+            val = 0.14
+        case 5
+            val = 0.18
+        case 6
+            val = 0.23
+        case 7
+            val = 0.28
+        case 8
+            val = 0.36
+        case 9
+            val = 0.42
+        case 10
+            val = 0.5
+    return val
+function dexMSBonus(int lvl) returns real
+    var val = lvl * 0.015
+    if lvl > 8
+        val += 0.05
+    return val
+
+@compiletime
+function genHeroAbilities()
+    // constitution
+    let constBuffId = BUFF_ID_GEN.next()
+    let constEffectList = effectList(
+        effectPair("Strength", lvl -> lvl.toString()),
+        effectPair("Armor", lvl -> constArmorBonus(lvl).toInt().toString()),
+        effectPair("HP / sec", lvl -> constHpRegen(lvl).toString(2)),
+        effectPair("Damage Reduced", lvl -> asPercent(constDmgReduced(lvl)))
+    )
+    new AbilityDefinitionCryptLordSpikedCarapace(kAID_HeroConstitution)
+        ..setLevels(10)
+        ..setName("Constitution")
+        ..presetHotkey("Q")
+        ..presetTooltipNormal((lvl) -> ttNormal("Constitution", lvl))
+        ..presetTooltipNormalExtended(lvl -> ttNormalExtended("Enhances your hero's ability to defend against and take damage. Increases strength, armor, hitpoint regen, and reduces the damage taken.", lvl, constEffectList))
+        ..setTooltipLearn(ttLearn("Constitution", "Q"))
+        ..setTooltipLearnExtended(ttLearnExtended("Enhances your hero's ability to defend against and take damage. Increases strength, armor, hitpoint regen, and reduces the damage taken.", 10, constEffectList))
+        ..presetDefenseBonus(lvl -> constArmorBonus(lvl))
+        ..presetReceivedDamageFactor(lvl -> 1.0 - constDmgReduced(lvl))
+        ..presetReturnedDamageFactor(lvl -> 0)
+        ..presetBuffs(lvl -> constBuffId.toRawCode())
+        ..setIconNormal(Icons.pASBTNReincarnation)
+        ..setIconResearch(Icons.bTNReincarnation)
+        ..presetButtonPosNormal(0, 2)
+        ..presetButtonPosResearch(0, 0)
+    new BuffDefinition(constBuffId, 'BUts')
+        ..setTooltipNormal(1, "Constitution")
+        ..setTooltipNormalExtended(1, "This hero has Constitution; thier strength, armor, and hitpoint regen are increased and they reduce damage from attacks")
+        ..setArtTarget(1, "")
+        ..setTargetAttachments(1, 0)
+        ..setIcon(Icons.bTNThickFur)
+    // Dexterity
+    let dexBuffId = BUFF_ID_GEN.next()
+    let dexEffectList = effectList(
+        effectPair("Agility", lvl -> lvl.toString()),
+        effectPair("Attack Speed", lvl -> asPercent(dexIAS(lvl))),
+        effectPair("Move Speed", lvl -> asPercent(dexMSBonus(lvl)))
+    )
+    new AbilityDefinitionTaurenChieftainEnduranceAura(kAID_HeroDexterity)
+        ..setLevels(10)
+        ..setName("Dexterity")
+        ..presetHotkey("W")
+        ..presetTooltipNormal(lvl -> ttNormal("Dexterity", lvl))
+        ..presetTooltipNormalExtended(lvl -> ttNormalExtended("Enhances your hero's ability to move and attack quickly. Increases agility, attack speed, and movement speed.", lvl, dexEffectList))
+        ..setTooltipLearn(ttLearn("Dexterity", "W"))
+        ..setTooltipLearnExtended(ttLearnExtended("Enhances your hero's ability to move and attack quickly. Increases agility, attack speed, and movement speed.", 10, dexEffectList))
+        ..presetAttackSpeedIncrease(lvl -> dexIAS(lvl))
+        ..presetMovementSpeedIncrease(lvl -> dexMSBonus(lvl))
+        ..presetBuffs(lvl -> dexBuffId.toRawCode())
+        ..setIconNormal(Icons.pASBTNEvasion)
+        ..setIconResearch(Icons.bTNEvasion)
+        ..presetButtonPosNormal(1, 2)
+        ..presetButtonPosResearch(1, 0)
+        ..setArtTarget("")
+        ..setTargetAttachmentPoint("")
+        ..presetTargetsAllowed(lvl -> "invulnerable,self,vulnerable")
+    new BuffDefinition(dexBuffId, 'BOae')
+        ..setIcon(Icons.bTNEvasion)
+        ..setTooltipNormal(1, "Dexterity")
+        ..setTooltipNormalExtended(1, "This hero has Dexterity; their agility, attack speed, and movement speed are enhanced.")
+        ..setArtTarget(1, "")
+    // Intellect
+
+    // Luck
+    

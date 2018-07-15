@@ -1,0 +1,10 @@
+package Cheats
+
+import ClosureForGroups
+
+init
+    CreateTrigger()
+        ..registerPlayerChatEvent(players[0], "-lvl", true)
+        ..addAction() ->
+            if GetTriggerPlayer().getName() == "Halithor"
+                GetUnitsSelectedAll(GetTriggerPlayer())..forEachIn(u -> u.addLevels(1, true))..destr()

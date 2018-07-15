@@ -1,0 +1,100 @@
+package GenerateTerrain
+
+import Globals
+constant deformInterval = 128.0
+constant riverRadius = 512.0
+constant riverDepth = 32.0
+
+constant sideOffsets = 128.0 * 1.2
+
+constant characterCount = 90
+constant characterMaxDistance = 128.0 * 5
+
+constant treeId = 'LTlt'
+constant treeCount = 30
+constant treeOffsetCount = 4
+constant treeOffsetDist = 128.0 * treeOffsetCount
+
+constant mineId = 'LTrc'
+constant mineCount = 30
+constant mineOffsetCount = 3
+constant mineOffsetDist = 128.0 * mineOffsetCount
+constant mineDestRemoveRadius = 96.0
+
+// function runRiver(vec2 start, vec2 finish)
+    // This requires the entire map to be water, then we raise the water to form the land
+    // No easy way to depress the land.
+    // skip
+    // let distance = start.distanceTo(finish)
+    // for i = 0 to (distance / deformInterval).toInt()
+    //     let pos = start.moveTowards(finish, i * deformInterval)
+    //     TerrainDeformCrater(pos.x, pos.y, riverRadius, riverDepth, 10, true)
+
+
+public function generateTerrain()
+    // Run the river
+    // if GetRandomInt(0, 1).toBool()
+    //     // north south
+    //     runRiver(gg_rct_SpawnNorth.randomPoint(), gg_rct_SpawnSouth.randomPoint())
+    // else
+    //     runRiver(gg_rct_SpawnEast.randomPoint(), gg_rct_SpawnWest.randomPoint())
+    let camRect = GetCameraBoundsMapRect()
+    // throw some character down
+    for i = 0 to characterCount
+        let start = camRect.randomPoint()
+        let target = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(128.0, characterMaxDistance))
+        for offset = 0 to (start.distanceTo(target) / 128.0).round()
+            let pos = start.moveTowards(target, offset * 128.0)
+            SetTerrainType(pos.x, pos.y, 'Ldro', -1, GetRandomInt(1, 3), 0)
+    for i = 0 to characterCount
+        let start = camRect.randomPoint()
+        let target = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(128.0, characterMaxDistance))
+        for offset = 0 to (start.distanceTo(target) / 128.0).round()
+            let pos = start.moveTowards(target, offset * 128.0)
+            SetTerrainType(pos.x, pos.y, 'Ldrg', -1, GetRandomInt(1, 3), 0)
+    for i = 0 to characterCount
+        let start = camRect.randomPoint()
+        let target = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(128.0, characterMaxDistance))
+        for offset = 0 to (start.distanceTo(target) / 128.0).round()
+            let pos = start.moveTowards(target, offset * 128.0)
+            SetTerrainType(pos.x, pos.y, 'Lgrs', -1, GetRandomInt(1, 3), 0)
+    // Place the trees
+    for i = 1 to treeCount
+        let start = kRect_PlayArea.randomPoint()
+        let final = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), treeOffsetDist)
+        for offset = 0 to treeOffsetCount
+            let pos = start.moveTowards(final, 128.0 * offset)
+            createDestructable(treeId, pos, GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(0.9, 1.4), GetRandomInt(0, 9))
+            SetTerrainType(pos.x, pos.y, 'Lgrd', -1, 3, 0)
+            if GetRandomReal(0, 1) < 0.75
+                let posLeft = pos.polarOffset(start.angleTo(final) + (90).asAngleDegrees(), sideOffsets)
+                createDestructable(treeId, posLeft, GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(0.9, 1.4), GetRandomInt(0, 9))
+                SetTerrainType(posLeft.x, posLeft.y, 'Lgrd', -1, 2, 0)
+            if GetRandomReal(0, 1) < 0.75
+                let posRight = pos.polarOffset(start.angleTo(final) + (90).asAngleDegrees(), sideOffsets)
+                createDestructable(treeId, posRight, GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(0.9, 1.4), GetRandomInt(0, 9))
+                SetTerrainType(posRight.x, posRight.y, 'Lgrd', -1, 2, 0)
+        
+    // Place the rocks
+    for i = 1 to mineCount
+        let start = kRect_PlayArea.randomPoint()
+        let final = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), treeOffsetDist)
+        for offset = 0 to mineOffsetCount
+            let pos = start.moveTowards(final, 128.0 * offset)
+            EnumDestructablesInRectAll(Rect(pos.x - mineDestRemoveRadius, pos.y - mineDestRemoveRadius, pos.x + mineDestRemoveRadius, pos.y + mineDestRemoveRadius)) ->
+                GetEnumDestructable().remove()
+            createDestructable(mineId, pos, GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(0.9, 1.4), GetRandomInt(0, 9))
+            SetTerrainType(pos.x, pos.y, 'Lrok', -1, 1, 0)
+            if GetRandomReal(0, 1) < 0.65
+                let posLeft = pos.polarOffset(start.angleTo(final) + (90).asAngleDegrees(), sideOffsets)
+                EnumDestructablesInRectAll(Rect(posLeft.x - mineDestRemoveRadius, posLeft.y - mineDestRemoveRadius, posLeft.x + mineDestRemoveRadius, posLeft.y + mineDestRemoveRadius)) ->
+                    GetEnumDestructable().remove()
+                createDestructable(mineId, posLeft, GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(0.9, 1.4), GetRandomInt(0, 9))
+                SetTerrainType(posLeft.x, posLeft.y, 'Lrok', -1, 1, 0)
+            if GetRandomReal(0, 1) < 0.65
+                let posRight = pos.polarOffset(start.angleTo(final) + (90).asAngleDegrees(), sideOffsets)
+                EnumDestructablesInRectAll(Rect(posRight.x - mineDestRemoveRadius, posRight.y - mineDestRemoveRadius, posRight.x + mineDestRemoveRadius, posRight.y + mineDestRemoveRadius)) ->
+                    GetEnumDestructable().remove()
+                createDestructable(mineId, posRight, GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(0.9, 1.4), GetRandomInt(0, 9))
+                SetTerrainType(posRight.x, posRight.y, 'Lrok', -1, 1, 0)
+

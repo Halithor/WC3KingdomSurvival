@@ -1,0 +1,16 @@
+package BuildingDefintions
+
+import UnitObjEditing
+import ObjectIds
+import Globals
+
+@compiletime
+function genBuildingDefs()
+    new BuildingDefinition(kUID_Castle, 'hcas')
+        ..setNormalAbilities(commaList(kAID_InvBasic, kAID_ShopPurchaseItem, kAID_ShopSharing))
+        ..setHitPointsMaximumBase(500)
+        ..setDefenseBase(5)
+        ..setUpgradesUsed("")
+        ..setUnitsTrained("")
+        ..setSightRadiusDay(600)
+        ..setSightRadiusNight(600)
