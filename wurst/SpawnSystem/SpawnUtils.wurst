@@ -1,0 +1,39 @@
+package SpawnUtils
+import UnitObjEditing
+import SpawnLevel
+
+function cleanCreep(int newId) returns UnitDefinition
+    return new UnitDefinition(newId, 'hfoo')
+        ..setArmorSoundType(ArmorSoundType.Flesh)
+        ..setDescription("")
+        ..setDisplayasNeutralHostile(true)
+        ..setFoodCost(0)
+        ..setGoldBountyAwardedBase(0)
+        ..setGoldBountyAwardedNumberofDice(0)
+        ..setGoldBountyAwardedSidesperDie(0)
+        ..setGoldCost(0)
+        ..setHitPointsMaximumBase(100)
+        ..setHitPointsRegenerationRate(0)
+        ..setLevel(1)
+        ..setLumberCost(0)
+        ..setManaInitialAmount(10000)
+        ..setCanFlee(false)
+        ..setNormalAbilities("")
+        ..setRace(Race.Creeps)
+
+public function defineCreep(int id, string name, string icon, string model, real scale, 
+    AttackType attackType, real attackRange, real attackCd, real attackDmg, real attackRolled,
+    ArmorType armorType, real armor, real maxLife, real regenLife,
+    real maxMana, real regenMana, real movespeed) returns Creep
+    cleanCreep(id)
+        ..setName(name)
+        ..setIconGameInterface(icon)
+        ..setModelFile(model)
+        ..setScalingValue(scale)
+        ..setAttack1AttackType(attackType)
+        ..setAttack1WeaponType(attackRange > 100 ? WeaponType.Missile : WeaponType.Normal)
+        ..setAttack1CooldownTime(attackCd)
+        ..setArmorType(armorType)
+
+    return new Creep(id, maxLife, regenLife, maxMana, regenMana, attackDmg, armor, attackCd, attackRolled, movespeed)
+        

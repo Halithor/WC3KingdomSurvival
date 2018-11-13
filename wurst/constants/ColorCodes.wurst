@@ -1,0 +1,3 @@
+package ColorCodes
+
+public constant ccFluff = "|cffffcc00"

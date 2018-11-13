@@ -1,0 +1,14 @@
+package SpawnLevelDefs
+
+import SpawnLevel
+import SpawnUtils
+import SpawnGlobals
+import Assets
+import UnitObjEditing
+
+
+function defineForestCreatures()
+    let level = new SpawnLevel()
+    // let rat = def
+    let dog = defineCreep(UID_DOG, "Dog", Icons.bTNWolf, Units.brownWolf1, 1.0, AttackType.Normal, 60, 1.5, 0.8, .3, ArmorType.Unarmored, 0.5, 0.9, 1.5, 0, 0, 320)
+    

@@ -12,15 +12,17 @@ init
     setCamBounds()    
     generateTerrain()
     setAlliances()
-    createUnits()
-    if kPlayer_King.getName() == "Halithor" and getPlayersIngame() == 1
-        let kingVision = CreateFogModifierRectSimple(kPlayer_King, FOG_OF_WAR_VISIBLE, GetPlayableMapRect(), true)
-            ..start()
-        doAfter(300) ->
-            kingVision.stop()
-            kingVision.destr()
-    registerPlayerUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_START) ->
-        GetConstructingStructure().setOwner(kPlayer_Kingdom, true)
+    DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 5, "|cffaa0000Please wait as the game finishes initialization...")
+    doAfter(300) ->
+        createUnits()
+        if kPlayer_King.getName() == "Halithor" and getPlayersIngame() == 1
+            let kingVision = CreateFogModifierRectSimple(kPlayer_King, FOG_OF_WAR_VISIBLE, GetPlayableMapRect(), true)
+                ..start()
+            doAfter(300) ->
+                kingVision.stop()
+                kingVision.destr()
+        registerPlayerUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_START) ->
+            GetConstructingStructure().setOwner(kPlayer_Kingdom, true)
 
 // King gets vision of all, and all get vision of king. But the villagers don't share vision.
 function setAlliances()
@@ -41,7 +43,7 @@ function setCamBounds()
     SetCameraBoundsToRect(kRect_PlayArea)
 
 function createUnits()
-    // TODO create king
+    // Create king, he gets items that others don't
     createUnit(kPlayer_King, kUID_Villager, kRect_PlayArea.getCenter(), GetRandomDirectionDeg().asAngleDegrees())
                 ..setProperName(kPlayer_King.getName())
                 ..addItemById(kIID_Building_Castle)

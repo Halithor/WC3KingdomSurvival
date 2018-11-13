@@ -1,0 +1,10 @@
+package SpawnGlobals
+
+import ObjectIdGenerator
+
+public constant UID_RAT = compiletime(UNIT_ID_GEN.next())
+public constant UID_DOG = compiletime(UNIT_ID_GEN.next())
+public constant UID_BIRD = compiletime(UNIT_ID_GEN.next())
+public constant UID_BOAR = compiletime(UNIT_ID_GEN.next())
+public constant UID_BEAR = compiletime(UNIT_ID_GEN.next())
+public constant UID_FOREST_BOSS = compiletime(UNIT_ID_GEN.next())

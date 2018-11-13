@@ -7,7 +7,7 @@ constant riverDepth = 32.0
 
 constant sideOffsets = 128.0 * 1.2
 
-constant characterCount = 90
+constant terrainVariationCount = 90
 constant characterMaxDistance = 128.0 * 5
 
 constant treeId = 'LTlt'
@@ -39,20 +39,20 @@ public function generateTerrain()
     // else
     //     runRiver(gg_rct_SpawnEast.randomPoint(), gg_rct_SpawnWest.randomPoint())
     let camRect = GetCameraBoundsMapRect()
-    // throw some character down
-    for i = 0 to characterCount
+    // throw some variation down
+    for i = 0 to terrainVariationCount
         let start = camRect.randomPoint()
         let target = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(128.0, characterMaxDistance))
         for offset = 0 to (start.distanceTo(target) / 128.0).round()
             let pos = start.moveTowards(target, offset * 128.0)
             SetTerrainType(pos.x, pos.y, 'Ldro', -1, GetRandomInt(1, 3), 0)
-    for i = 0 to characterCount
+    for i = 0 to terrainVariationCount
         let start = camRect.randomPoint()
         let target = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(128.0, characterMaxDistance))
         for offset = 0 to (start.distanceTo(target) / 128.0).round()
             let pos = start.moveTowards(target, offset * 128.0)
             SetTerrainType(pos.x, pos.y, 'Ldrg', -1, GetRandomInt(1, 3), 0)
-    for i = 0 to characterCount
+    for i = 0 to terrainVariationCount
         let start = camRect.randomPoint()
         let target = start.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), GetRandomReal(128.0, characterMaxDistance))
         for offset = 0 to (start.distanceTo(target) / 128.0).round()

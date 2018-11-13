@@ -1,0 +1,51 @@
+package SpawnLevel
+import LinkedList
+
+public class Creep
+    /** This is the base unit that the creep will be based on for visuals and certain attack characteristics. */
+    int unitId
+    string name
+    /** All the following statitics are relative to the level */
+    real maxLife = 1.0
+    real regenLife = 1.0
+    real maxMana = 0.0
+    real regenMana = 1.0
+    real attackDmg = 1.0
+    real armor = 1.0
+
+    /** Other attack characteristics */
+    real attackCd = 2.0
+    real attackRolled = 0.2
+    /** Movement */
+    real movespeed = 250
+
+    construct(int unitId, real maxLife, real regenLife, real maxMana, real regenMana, 
+            real attackDmg, real armor, real attackCd, real attackRolled, real movespeed)
+        this.unitId = unitId
+        this.maxLife = maxLife
+        this.regenLife = regenLife
+        this.maxMana = maxMana
+        this.regenMana = regenMana
+        this.attackDmg = attackDmg
+        this.armor = armor
+        this.attackCd = attackCd
+        this.attackRolled = attackRolled
+        this.movespeed = movespeed
+    
+
+public class SpawnLevel
+    // Textual parts of a level
+    string name
+    string fluffStart
+    // List of creeps that can be spawned for this level
+    LinkedList<Creep> creeps
+    // Number of rounds for this spawn level
+    int rounds
+    // The delay between each round
+    int roundDelay
+    // The number of creeps to spawn for each round (for each target)
+    LinkedList<int> roundCreepCounts
+    // The likelihood that each creep listed in the creeps list is spawned for a round
+    LinkedList<LinkedList<int>> creepLikelihoods
+    // Boss creep stats: his multiplier are applied to the boss stat block.
+    Creep boss
