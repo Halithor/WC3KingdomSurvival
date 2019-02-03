@@ -11,3 +11,4 @@ function genAbilityDefs()
     new AbilityDefinitionInventory(kAID_InvBasic)
         ..setDropItemsOnDeath(1, true)
         ..setCanUseItems(1, false)
+    

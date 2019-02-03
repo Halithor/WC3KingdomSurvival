@@ -2,6 +2,60 @@ package SpawnUtils
 import UnitObjEditing
 import SpawnLevel
 
+public enum AttackTypeKS 
+    Slashing
+    Piercing
+    Bludgeoning
+    Magic
+    Chaos
+    Beast
+
+public enum ArmorTypeKS
+    Cloth
+    Leather
+    Plate
+    Structure
+    Blessed
+    Ghost
+    Unarmored
+
+function AttackTypeKS.toAttackType() returns AttackType
+    switch this
+        case Slashing
+            return AttackType.Normal
+        case Piercing
+            return AttackType.Pierce
+        case Bludgeoning
+            return AttackType.Siege
+        case Magic
+            return AttackType.Magic
+        case Chaos
+            return AttackType.Chaos
+        case Beast
+            return AttackType.Hero
+        default
+            return AttackType.Normal
+
+function ArmorTypeKS.toArmorType() returns ArmorType
+    switch this
+        case Cloth
+            return ArmorType.Small
+        case Leather
+            return ArmorType.Medium
+        case Plate
+            return ArmorType.Large
+        case Structure
+            return ArmorType.Fortified
+        case Blessed
+            return ArmorType.Hero
+        case Ghost
+            return ArmorType.Divine
+        case Unarmored
+            return ArmorType.Unarmored
+        default
+            return ArmorType.Unarmored
+
+
 function cleanCreep(int newId) returns UnitDefinition
     return new UnitDefinition(newId, 'hfoo')
         ..setArmorSoundType(ArmorSoundType.Flesh)
@@ -21,19 +75,50 @@ function cleanCreep(int newId) returns UnitDefinition
         ..setNormalAbilities("")
         ..setRace(Race.Creeps)
 
+/**
+ * Defines a creep for the level system. Creates the UnitDefinition and returns the creep object.
+ * 
+ * Multipliers: attackDmg, armor, maxLife, regenLife, maxMana, regenMana
+ * Absolute: attackRange, attackCd, movespeed
+ * Percentage: attackRolled.
+ */
 public function defineCreep(int id, string name, string icon, string model, real scale, 
-    AttackType attackType, real attackRange, real attackCd, real attackDmg, real attackRolled,
-    ArmorType armorType, real armor, real maxLife, real regenLife,
+    AttackTypeKS attackType, real attackRange, real attackCd, real attackDmg, real attackRolled,
+    ArmorTypeKS armorType, real armor, real maxLife, real regenLife,
+    real maxMana, real regenMana, real movespeed, real collisionSize, MovementType movementType) returns Creep
+    cleanCreep(id)
+        ..setName(name)
+        ..setIconGameInterface(icon)
+        ..setModelFile(model)
+        ..setScalingValue(scale)
+        ..setAttack1AttackType(attackType.toAttackType())
+        ..setAttack1WeaponType(attackRange > 100 ? WeaponType.Missile : WeaponType.Normal)
+        ..setAttack1CooldownTime(attackCd)
+        ..setArmorType(armorType.toArmorType())
+        ..setCollisionSize(collisionSize)
+        ..setMovementType(movementType)
+        
+    return new Creep(id, maxLife, regenLife, maxMana, regenMana, attackDmg, armor, attackCd, attackRolled, movespeed)
+
+/**
+* Defines a creep for the level system. Creates the UnitDefinition and returns the creep object.
+* 
+* Multipliers: attackDmg, armor, maxLife, regenLife, maxMana, regenMana
+* Absolute: attackRange, attackCd, movespeed
+* Percentage: attackRolled.
+*/
+public function defineRangedCreep(int id, string name, string icon, string model, real scale, 
+    AttackTypeKS attackType, real attackRange, real attackCd, real attackDmg, real attackRolled,
+    ArmorTypeKS armorType, real armor, real maxLife, real regenLife,
     real maxMana, real regenMana, real movespeed) returns Creep
     cleanCreep(id)
         ..setName(name)
         ..setIconGameInterface(icon)
         ..setModelFile(model)
         ..setScalingValue(scale)
-        ..setAttack1AttackType(attackType)
+        ..setAttack1AttackType(attackType.toAttackType())
         ..setAttack1WeaponType(attackRange > 100 ? WeaponType.Missile : WeaponType.Normal)
         ..setAttack1CooldownTime(attackCd)
-        ..setArmorType(armorType)
+        ..setArmorType(armorType.toArmorType())
 
     return new Creep(id, maxLife, regenLife, maxMana, regenMana, attackDmg, armor, attackCd, attackRolled, movespeed)
-        

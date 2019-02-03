@@ -31,7 +31,30 @@ public class Creep
         this.attackCd = attackCd
         this.attackRolled = attackRolled
         this.movespeed = movespeed
-    
+
+public class CreepWeight
+    int uid
+    int weight
+
+    construct(int uid, int weight)
+        this.uid = uid
+        this.weight = weight
+
+// Shorthand function for constructing creep weights
+public function cw(int uid, int weight) returns CreepWeight
+    return new CreepWeight(uid, weight)
+
+public class Round
+    // The number of creeps to spawn per target.
+    int creepCount
+    LinkedList<CreepWeight> weights
+
+    construct(int count, LinkedList<CreepWeight> weights)
+        this.creepCount = count
+        this.weights = weights
+
+public function rnd(int count, LinkedList<CreepWeight> weights) returns Round
+    return new Round(count, weights)
 
 public class SpawnLevel
     // Textual parts of a level
@@ -39,13 +62,9 @@ public class SpawnLevel
     string fluffStart
     // List of creeps that can be spawned for this level
     LinkedList<Creep> creeps
-    // Number of rounds for this spawn level
-    int rounds
     // The delay between each round
     int roundDelay
-    // The number of creeps to spawn for each round (for each target)
-    LinkedList<int> roundCreepCounts
-    // The likelihood that each creep listed in the creeps list is spawned for a round
-    LinkedList<LinkedList<int>> creepLikelihoods
+    // The rounds of this level
+    LinkedList<Round> rounds
     // Boss creep stats: his multiplier are applied to the boss stat block.
     Creep boss
