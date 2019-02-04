@@ -3,8 +3,14 @@ package Globals
 import ObjectIdGenerator
 import ObjectIds
 
-constant cameraBoundOffset = 44 * 128
-public constant kRect_PlayArea = Rect(GetPlayableMapRect().getCenter().x - cameraBoundOffset, GetPlayableMapRect().getCenter().y - cameraBoundOffset, GetPlayableMapRect().getCenter().x + cameraBoundOffset, GetPlayableMapRect().getCenter().y + cameraBoundOffset)
+public constant mapPlayAreaRadius = 44
+
+constant cameraBoundOffset = mapPlayAreaRadius * 128
+public constant kRect_PlayArea = Rect(
+    GetPlayableMapRect().getCenter().x - cameraBoundOffset, 
+    GetPlayableMapRect().getCenter().y - cameraBoundOffset, 
+    GetPlayableMapRect().getCenter().x + cameraBoundOffset, 
+    GetPlayableMapRect().getCenter().y + cameraBoundOffset)
 
 public constant kPlayer_Kingdom = players[9]
 public constant kPlayer_King = players[0]

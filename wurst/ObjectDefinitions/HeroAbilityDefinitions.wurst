@@ -51,17 +51,35 @@ function dexMSBonus(int lvl) returns real
         val += 0.05
     return val
 
+function intManaRegen(int lvl) returns real 
+    return 0.2 * lvl
+
+function intManaMax(int lvl) returns int 
+    var val = lvl * 5
+    if lvl > 4
+        val += (lvl - 4) * 5
+    if lvl > 8
+        val += (lvl - 8) * 10
+    return val
+
+function intExpGain(int lvl) returns real
+    var val = lvl * 0.1
+    if lvl > 5
+        val += (lvl - 5) * 0.1
+    return val
+
 @compiletime
 function genHeroAbilities()
     // constitution
-    let constBuffId = BUFF_ID_GEN.next()
+    // let constBuffId = BUFF_ID_GEN.next()
     let constEffectList = effectList(
         effectPair("Strength", lvl -> lvl.toString()),
         effectPair("Armor", lvl -> constArmorBonus(lvl).toInt().toString()),
         effectPair("HP / sec", lvl -> constHpRegen(lvl).toString(2)),
         effectPair("Damage Reduced", lvl -> asPercent(constDmgReduced(lvl)))
     )
-    new AbilityDefinitionCryptLordSpikedCarapace(kAID_HeroConstitution)
+    new AbilityDefinition(kAID_HeroConstitution,  AbilityIds.gyrocopterBombs)
+        ..setHeroAbility(true)
         ..setLevels(10)
         ..setName("Constitution")
         ..presetHotkey("Q")
@@ -69,28 +87,26 @@ function genHeroAbilities()
         ..presetTooltipNormalExtended(lvl -> ttNormalExtended("Enhances your hero's ability to defend against and take damage. Increases strength, armor, hitpoint regen, and reduces the damage taken.", lvl, constEffectList))
         ..setTooltipLearn(ttLearn("Constitution", "Q"))
         ..setTooltipLearnExtended(ttLearnExtended("Enhances your hero's ability to defend against and take damage. Increases strength, armor, hitpoint regen, and reduces the damage taken.", 10, constEffectList))
-        ..presetDefenseBonus(lvl -> constArmorBonus(lvl))
-        ..presetReceivedDamageFactor(lvl -> 1.0 - constDmgReduced(lvl))
-        ..presetReturnedDamageFactor(lvl -> 0)
-        ..presetBuffs(lvl -> constBuffId.toRawCode())
+        // ..presetBuffs(lvl -> constBuffId.toRawCode())
         ..setIconNormal(Icons.pASBTNReincarnation)
         ..setIconResearch(Icons.bTNReincarnation)
-        ..presetButtonPosNormal(0, 2)
+        ..presetButtonPosNormal(-1, -1)
         ..presetButtonPosResearch(0, 0)
-    new BuffDefinition(constBuffId, 'BUts')
-        ..setTooltipNormal(1, "Constitution")
-        ..setTooltipNormalExtended(1, "This hero has Constitution; thier strength, armor, and hitpoint regen are increased and they reduce damage from attacks")
-        ..setArtTarget(1, "")
-        ..setTargetAttachments(1, 0)
-        ..setIcon(Icons.bTNThickFur)
+    // new BuffDefinition(constBuffId, 'BUts')
+    //     ..setTooltipNormal(1, "Constitution")
+    //     ..setTooltipNormalExtended(1, "This hero has Constitution; thier strength, armor, and hitpoint regen are increased and they reduce damage from attacks")
+    //     ..setArtTarget(1, "")
+    //     ..setTargetAttachments(1, 0)
+    //     ..setIcon(Icons.bTNThickFur)
     // Dexterity
-    let dexBuffId = BUFF_ID_GEN.next()
+    // let dexBuffId = BUFF_ID_GEN.next()
     let dexEffectList = effectList(
         effectPair("Agility", lvl -> lvl.toString()),
         effectPair("Attack Speed", lvl -> asPercent(dexIAS(lvl))),
         effectPair("Move Speed", lvl -> asPercent(dexMSBonus(lvl)))
     )
-    new AbilityDefinitionTaurenChieftainEnduranceAura(kAID_HeroDexterity)
+    new AbilityDefinition(kAID_HeroDexterity, AbilityIds.gyrocopterBombs)
+        ..setHeroAbility(true)
         ..setLevels(10)
         ..setName("Dexterity")
         ..presetHotkey("W")
@@ -98,22 +114,63 @@ function genHeroAbilities()
         ..presetTooltipNormalExtended(lvl -> ttNormalExtended("Enhances your hero's ability to move and attack quickly. Increases agility, attack speed, and movement speed.", lvl, dexEffectList))
         ..setTooltipLearn(ttLearn("Dexterity", "W"))
         ..setTooltipLearnExtended(ttLearnExtended("Enhances your hero's ability to move and attack quickly. Increases agility, attack speed, and movement speed.", 10, dexEffectList))
-        ..presetAttackSpeedIncrease(lvl -> dexIAS(lvl))
-        ..presetMovementSpeedIncrease(lvl -> dexMSBonus(lvl))
-        ..presetBuffs(lvl -> dexBuffId.toRawCode())
+        // ..presetBuffs(lvl -> dexBuffId.toRawCode())
         ..setIconNormal(Icons.pASBTNEvasion)
         ..setIconResearch(Icons.bTNEvasion)
-        ..presetButtonPosNormal(1, 2)
+        ..presetButtonPosNormal(-1, -1)
         ..presetButtonPosResearch(1, 0)
         ..setArtTarget("")
         ..setTargetAttachmentPoint("")
         ..presetTargetsAllowed(lvl -> "invulnerable,self,vulnerable")
-    new BuffDefinition(dexBuffId, 'BOae')
-        ..setIcon(Icons.bTNEvasion)
-        ..setTooltipNormal(1, "Dexterity")
-        ..setTooltipNormalExtended(1, "This hero has Dexterity; their agility, attack speed, and movement speed are enhanced.")
-        ..setArtTarget(1, "")
+    // new BuffDefinition(dexBuffId, 'BOae')
+    //     ..setIcon(Icons.bTNEvasion)
+    //     ..setTooltipNormal(1, "Dexterity")
+    //     ..setTooltipNormalExtended(1, "This hero has Dexterity; their agility, attack speed, and movement speed are enhanced.")
+    //     ..setArtTarget(1, "")
     // Intellect
-
+    let intBuffList = effectList(
+        effectPair("Intelligence", lvl -> lvl.toString()),
+        effectPair("Mana Regen", lvl -> asPercent(intManaRegen(lvl))),
+        effectPair("Mana Max", lvl -> intManaMax(lvl).toString()),
+        effectPair("Experience Gain", lvl -> asPercent(intExpGain(lvl)))
+    )
+    new AbilityDefinition(kAID_HeroIntellect, AbilityIds.gyrocopterBombs)
+        ..setHeroAbility(true)
+        ..setLevels(10)
+        ..setName("Intellect")
+        ..presetHotkey("E")
+        ..presetTooltipNormal(lvl -> ttNormal("Intellect", lvl))
+        ..presetTooltipNormalExtended(lvl -> ttNormalExtended("Enhances your hero's ability to sustain mana and gain experience. Increases intelligence, mana regen, max mana, and experience gain.", lvl, intBuffList))
+        ..setTooltipLearn(ttLearn("Intellect", "E"))
+        ..setTooltipLearnExtended(ttLearnExtended("Enhances your hero's ability to sustain mana and gain experience. Increases intelligence, mana regen, max mana, and experience gain.", 10, intBuffList))
+        // ..presetBuffs(lvl -> dexBuffId.toRawCode())
+        ..setIconNormal(Icons.pASBTNBrilliance)
+        ..setIconResearch(Icons.bTNBrilliance)
+        ..presetButtonPosNormal(-1, -1)
+        ..presetButtonPosResearch(2, 0)
+        ..setArtTarget("")
+        ..setTargetAttachmentPoint("")
+        ..presetTargetsAllowed(lvl -> "invulnerable,self,vulnerable")
     // Luck
-    
+    let luckBuffList = effectList(
+        effectPair("Agility", lvl -> lvl.toString()),
+        effectPair("Strength", lvl -> lvl.toString()),
+        effectPair("Intelligence", lvl -> lvl.toString())
+    )
+    new AbilityDefinition(kAID_HeroLuck, AbilityIds.gyrocopterBombs)
+        ..setHeroAbility(true)
+        ..setLevels(10)
+        ..setName("Luck")
+        ..presetHotkey("R")
+        ..presetTooltipNormal(lvl -> ttNormal("Luck", lvl))
+        ..presetTooltipNormalExtended(lvl -> ttNormalExtended("Enhances your hero's chance at success when crafting and exploring. Increases agility, strength, and intelligence.", lvl, luckBuffList))
+        ..setTooltipLearn(ttLearn("Luck", "R"))
+        ..setTooltipLearnExtended(ttLearnExtended("Enhances your hero's chance at success when crafting and exploring. Increases agility, strength, and intelligence.", 10, luckBuffList))
+        // ..presetBuffs(lvl -> dexBuffId.toRawCode())
+        ..setIconNormal(Icons.pASBTNPillage)
+        ..setIconResearch(Icons.bTNPillage)
+        ..presetButtonPosNormal(-1, -1)
+        ..presetButtonPosResearch(3, 0)
+        ..setArtTarget("")
+        ..setTargetAttachmentPoint("")
+        ..presetTargetsAllowed(lvl -> "invulnerable,self,vulnerable")

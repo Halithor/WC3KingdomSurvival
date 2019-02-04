@@ -19,6 +19,8 @@ function createBuildingItemDef(int newId, string name, string description, strin
         ..setDurationNormal(1, buildTime)
     return getItemDef(newId, name, description, icon, ItemType.Building)
         ..setAbilities(abilId.toRawCode())
+        ..setNumberofCharges(1)
+        ..setPerishable(true)
 
 @compiletime
 function genItemBuildings()

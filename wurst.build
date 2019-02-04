@@ -3,6 +3,7 @@ projectName: "KingdomSurvival"
 dependencies:
 - "https://github.com/wurstscript/wurstStdlib2"
 - "https://github.com/Halithor/HalithorsRecipeSystem"
+- "https://github.com/Halithor/WC3AttributeSystem"
 buildMapData:
   name: "Kingdom Survival v0.01"
   fileName: "KingdomSurvival_v0.01"

@@ -13,14 +13,12 @@ init
     generateTerrain()
     setAlliances()
     DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 5, "|cffaa0000Please wait as the game finishes initialization...")
-    doAfter(300) ->
+    if kPlayer_King.getName() == "WorldEdit" and getPlayersIngame() == 1
+        let kingVision = CreateFogModifierRectSimple(kPlayer_King, FOG_OF_WAR_VISIBLE, GetPlayableMapRect(), true)
+            ..start()
+    doAfter(5) ->
+        DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 5, "Spawning players...")
         createUnits()
-        if kPlayer_King.getName() == "Halithor" and getPlayersIngame() == 1
-            let kingVision = CreateFogModifierRectSimple(kPlayer_King, FOG_OF_WAR_VISIBLE, GetPlayableMapRect(), true)
-                ..start()
-            doAfter(300) ->
-                kingVision.stop()
-                kingVision.destr()
         registerPlayerUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_START) ->
             GetConstructingStructure().setOwner(kPlayer_Kingdom, true)
 
