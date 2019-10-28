@@ -1,4 +1,4 @@
-package GameInit
+package Game
 
 import GenerateTerrain
 import Globals

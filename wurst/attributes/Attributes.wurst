@@ -1,0 +1,23 @@
+package Attributes
+
+import public AttributeSystem_Globals
+import public AttributeSystem
+
+// Bonus percentage of experience gained
+public constant ATR_EXP_GAIN = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+
+// Spell Damage % increase
+public constant ATR_SPELL_DMG = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+
+// Healing 'dealt' increase and healing taken increase, as percentages
+public constant ATR_HEAL_CASTER_BONUS = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_HEAL_TARGET_BONUS = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+
+// Resistance to spell damage, both flat reduction and percentage
+public constant ATR_DMG_RESIST_SPELL_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_DMG_RESIST_SPELL_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+
+// Resistance to physical damage, both flat and percentage
+public constant ATR_DMG_RESIST_PHYSICAL_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+public constant ATR_DMG_RESIST_PHYSICAL_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
+
