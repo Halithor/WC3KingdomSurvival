@@ -1,7 +1,4 @@
 package GenTerrainUtils
-import LinkedList
-
-
 
 public interface DestructableCallback
   function callback(destructable u)
@@ -46,8 +43,8 @@ public function forDestructableInCircle(vec2 center, real radius, DestructableCa
     Rect(
       center.x - radius, center.y - radius, 
       center.x + radius, center.y + radius)) d -> 
-        if d.getPos().distanceToSq(center) < distLimitSq
-          c.callback(d)
+    if d.getPos().distanceToSq(center) < distLimitSq
+      c.callback(d)
 
 interface PositionAction
   function run(vec2 pos)

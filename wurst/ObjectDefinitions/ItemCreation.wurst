@@ -18,7 +18,7 @@ public enum EquipmentClass
   Accessory
 
 function ItemType.getColor() returns color
-  color result = COLOR_BLACK.withoutAlpha()
+  color result
   switch this
     case ProfessionTools
       result = fromHexString("ff804000").withoutAlpha()
@@ -33,7 +33,7 @@ function ItemType.getColor() returns color
   return result
 
 function ItemType.getName() returns string
-  var result = ""
+  string result
   switch this
     case ProfessionTools
       result = "Profession Equipment"
