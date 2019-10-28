@@ -11,11 +11,18 @@ public constant PATHING_INCREMENT = 32.0
 public constant WATER_DEPRESSION = TILE_SIZE
 
 constant cameraBoundOffset = mapPlayAreaRadius * TILE_SIZE
+constant terrainAreaOffset = (mapPlayAreaRadius + 6) * TILE_SIZE 
+
 public constant kRect_PlayArea = Rect(
   GetPlayableMapRect().getCenter().x - cameraBoundOffset, 
   GetPlayableMapRect().getCenter().y - cameraBoundOffset, 
   GetPlayableMapRect().getCenter().x + cameraBoundOffset, 
   GetPlayableMapRect().getCenter().y + cameraBoundOffset)
+public constant kRect_TerrainArea = Rect(
+  GetPlayableMapRect().getCenter().x - terrainAreaOffset, 
+  GetPlayableMapRect().getCenter().y - terrainAreaOffset, 
+  GetPlayableMapRect().getCenter().x + terrainAreaOffset, 
+  GetPlayableMapRect().getCenter().y + terrainAreaOffset) 
 
 public constant kPlayer_Kingdom = players[9]
 public constant kPlayer_King = players[0]

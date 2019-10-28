@@ -46,7 +46,7 @@ public function forDestructableInCircle(vec2 center, real radius, DestructableCa
     if d.getPos().distanceToSq(center) < distLimitSq
       c.callback(d)
 
-interface PositionAction
+public interface PositionAction
   function run(vec2 pos)
 
 public function forPositionsInRect(rect r, real increment, PositionAction pa)

@@ -1,17 +1,145 @@
 package GenerateTerrain
 
 import GenTerrainUtils
+import Globals
+import TerrainTypes
+import Execute
+
+constant deformInterval = 128.0
+constant riverRadius = 512.0
+constant riverDepth = 32.0
+
+constant sideOffsets = TILE_SIZE * 1.2
+
+constant terrainFlavorCount = 90
+constant flavorMaxDistance = TILE_SIZE * 6
+
+constant treeId = 'LTlt'
+constant treeCount = 40
+constant treeOffsetCount = 4
+constant treeOffsetDist = TILE_SIZE * treeOffsetCount
+
+constant mineId = 'LTrc'
+constant mineCount = 30
+constant mineOffsetCount = 3
+constant mineOffsetDist = TILE_SIZE * mineOffsetCount
+constant mineDestRemoveRadius = 96.0
 
 public function generateTerrain()
+  setupBlankTerrain()
+  createFlavor()
   createTrees()
   createRocks()
   runRiver()
+  
+  
+int executeIter = 0
+function setupBlankTerrain()
+  TerrainDeformCrater(0, 0, TILE_SIZE * mapSize, -TILE_SIZE, 0, true)
+  let pathingRadius = mapPlayAreaRadius * (TILE_SIZE / PATHING_INCREMENT).round()
+  executeIter = -pathingRadius
+  executeWhile(10, () -> executeIter < pathingRadius) ->
+    let y = executeIter
+    for x = -pathingRadius to pathingRadius
+      SetTerrainPathable(x * PATHING_INCREMENT, y * PATHING_INCREMENT, 
+        PATHING_TYPE_BUILDABILITY, true)
+      SetTerrainPathable(x * PATHING_INCREMENT, y * PATHING_INCREMENT, 
+        PATHING_TYPE_FLOATABILITY, false)
+    executeIter++   
+
+function createFlavor()
+  for i = 0 to terrainFlavorCount
+    forPositionsInLineRandom(GetRandomReal(128, flavorMaxDistance)) (vec2 pos) ->
+      SetTerrainType(pos.x, pos.y, TerrainType.lordaeron_Summer_Grass, -1, GetRandomInt(1, 3), 0)
+    forPositionsInLineRandom(GetRandomReal(128, flavorMaxDistance)) (vec2 pos) ->
+      SetTerrainType(pos.x, pos.y, TerrainType.lordaeron_Summer_Grassy_Dirt, -1, GetRandomInt(1, 3), 0)
+    forPositionsInLineRandom(GetRandomReal(128, flavorMaxDistance)) (vec2 pos) ->
+      SetTerrainType(pos.x, pos.y, TerrainType.lordaeron_Summer_Grassy_Dirt, -1, GetRandomInt(1, 3), 0)  
 
 function createTrees()
-  skip
+  for  i = 0 to treeCount
+    let pos1 = kRect_TerrainArea.randomPoint()
+    let pos2 = pos1.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), treeOffsetDist)
+    let angle = pos1.angleTo(pos2)
+    forPositionsInLine(pos1, pos2, TILE_SIZE) (vec2 pos) ->
+      CreateDestructableZ(
+        treeId, 
+        pos.x, 
+        pos.y, 
+        128.0, 
+        GetRandomDirectionDeg().asAngleRadians().radians(), 
+        GetRandomReal(0.9, 1.2), 
+        GetRandomInt(0, 9))
+      SetTerrainType(pos.x, pos.y, TerrainType.lordaeron_Summer_Dark_Grass, -1, 3, 0)
+      if GetRandomReal(0, 1) < 0.75
+        let leftPos = pos.polarOffset(angle + (90).asAngleDegrees(), sideOffsets)
+        CreateDestructableZ(
+          treeId, 
+          leftPos.x, 
+          leftPos.y, 
+          128.0, 
+          GetRandomDirectionDeg().asAngleRadians().radians(), 
+          GetRandomReal(0.9, 1.2), 
+          GetRandomInt(0, 9))
+        SetTerrainType(leftPos.x, leftPos.y, TerrainType.lordaeron_Summer_Dark_Grass, -1, 2, 0)
+      if GetRandomReal(0, 1) < 0.75
+        let rightPos = pos.polarOffset(angle + (-90).asAngleDegrees(), sideOffsets)
+        CreateDestructableZ(
+          treeId, 
+          rightPos.x, 
+          rightPos.y, 
+          128.0, 
+          GetRandomDirectionDeg().asAngleRadians().radians(), 
+          GetRandomReal(0.9, 1.2), 
+          GetRandomInt(0, 9))
+        SetTerrainType(rightPos.x, rightPos.y, TerrainType.lordaeron_Summer_Dark_Grass, -1, 2, 0)
+
 
 function createRocks()
-  skip
+  for  i = 0 to mineCount
+    let pos1 = kRect_TerrainArea.randomPoint()
+    let pos2 = pos1.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), treeOffsetDist)
+    let angle = pos1.angleTo(pos2)
+    forPositionsInLine(pos1, pos2, TILE_SIZE) (vec2 pos) ->
+      forDestructableInCircle(pos, mineDestRemoveRadius) (destructable u) ->
+        u.remove()
+      CreateDestructableZ(
+        mineId, 
+        pos.x, 
+        pos.y, 
+        128.0, 
+        GetRandomDirectionDeg().asAngleRadians().radians(), 
+        GetRandomReal(0.9, 1.2), 
+        GetRandomInt(0, 9))
+      SetTerrainType(pos.x, pos.y, TerrainType.lordaeron_Summer_Rock, -1, 2, 0)
+      if GetRandomReal(0, 1) < 0.75
+        let leftPos = pos.polarOffset(angle + (90).asAngleDegrees(), sideOffsets)
+        CreateDestructableZ(
+          mineId, 
+          leftPos.x, 
+          leftPos.y, 
+          128.0, 
+          GetRandomDirectionDeg().asAngleRadians().radians(), 
+          GetRandomReal(0.9, 1.2), 
+          GetRandomInt(0, 9))        
+        SetTerrainType(leftPos.x, leftPos.y, TerrainType.lordaeron_Summer_Rock, -1, 1, 0)
+      if GetRandomReal(0, 1) < 0.75
+        let rightPos = pos.polarOffset(angle + (-90).asAngleDegrees(), sideOffsets)
+        CreateDestructableZ(
+          mineId, 
+          rightPos.x, 
+          rightPos.y, 
+          128.0, 
+          GetRandomDirectionDeg().asAngleRadians().radians(), 
+          GetRandomReal(0.9, 1.2), 
+          GetRandomInt(0, 9))
+        SetTerrainType(rightPos.x, rightPos.y, TerrainType.lordaeron_Summer_Rock, -1, 1, 0)
 
 function runRiver()
   skip
+
+
+function forPositionsInLineRandom(real length, PositionAction pa)
+  let pos1 = kRect_TerrainArea.randomPoint()
+  let pos2 = pos1.polarOffset(GetRandomDirectionDeg().asAngleDegrees(), length)
+  forPositionsInLine(pos1, pos2, TILE_SIZE, pa)

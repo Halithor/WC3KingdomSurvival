@@ -50,8 +50,3 @@ function createUnits()
       createUnit(players[i], kUID_Villager, pos, GetRandomDirectionDeg().asAngleDegrees())
         ..setProperName(players[i].getName())
       SetCameraPositionForPlayer(players[i], pos.x, pos.y)
-  
-  for i = 1 to 12
-    let pos = kRect_PlayArea.randomPoint()
-    createUnit(players[0], 'hfoo', pos, (0.0).asAngleDegrees())
-      ..issuePointOrder("move", vec2(0,0))
