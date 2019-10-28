@@ -1,0 +1,15 @@
+package UnitUtils
+
+import Attributes
+import HashMap
+
+public function createKingdomUnit(player p, int unitId, vec2 pos, angle facing) returns unit
+  let ret = CreateUnit(p, unitId, pos.x, pos.y, facing.degrees())
+  ret.parseAndInitAttributes()
+  return ret
+
+
+public function createKingdomUnit(player p, int unitId, vec2 pos, angle facing, IterableMap<AttributeId, int> values) returns unit
+  let ret = CreateUnit(p, unitId, pos.x, pos.y, facing.degrees())
+  ret.initAttributes(values)
+  return ret
