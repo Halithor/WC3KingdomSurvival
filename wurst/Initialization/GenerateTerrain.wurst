@@ -195,7 +195,7 @@ function initializeTerrainNodes()
 
 /** Creates all of the island terrain */
 function generateIslands() 
-  SetTerrainType(quarterMap, quarterMap, TerrainType.Sunken_Ruins_Sand, -1, 
+  SetTerrainType(quarterMap, quarterMap, TerrainType.sunken_Ruins_Sand, -1, 
       (mapSize / 4).round() + 1, 1)
   // First we sink the entire islands section
   executeIter = 0
@@ -222,7 +222,7 @@ function generateIslands()
     let node = executeHlIter.next()
     TerrainDeformCrater(node.x * TILE_SIZE, node.y * TILE_SIZE, node.radius * TILE_SIZE * 1.2, 
         -TILE_SIZE * 1.5, 0, true)
-    SetTerrainType(node.x * TILE_SIZE, node.y * TILE_SIZE, TerrainType.Sunken_Ruins_Grass, 
+    SetTerrainType(node.x * TILE_SIZE, node.y * TILE_SIZE, TerrainType.sunken_Ruins_Grass, 
         -1, node.radius - 1, 0)
     // Change the pathing by doing it in one corner, then mirror it around the circle.
     forPositionsInCircle(node.getMapPos(), node.radius * TILE_SIZE, PATHING_INCREMENT) p ->
@@ -232,7 +232,7 @@ function generateIslands()
     
 /** Generate the forest trees and clearings */
 function generateForest()
-  SetTerrainType(-quarterMap, -quarterMap, TerrainType.Ashenvale_Leaves, -1, 
+  SetTerrainType(-quarterMap, -quarterMap, TerrainType.ashenvale_Leaves, -1, 
       (mapSize / 4).round() + 1, 1)
   let forestRect = Rect(-mapSize * TILE_SIZE / 2, -mapSize * TILE_SIZE / 2, 0, 0)
   // Place the trees
@@ -247,14 +247,14 @@ function generateForest()
   // Carve out the zones
   execute() ->
     for Node node in forestNodes
-      SetTerrainType(node.getMapPos().x, node.getMapPos().y, TerrainType.Ashenvale_Grass,
+      SetTerrainType(node.getMapPos().x, node.getMapPos().y, TerrainType.ashenvale_Grass,
           -1, node.radius, 0)
       forDestructableInCircle(node.getMapPos(), node.radius * TILE_SIZE) d ->
         d.remove()
 
 /** Generate the mountains and the snowy clearings.  */
 function generateMountains()
-  SetTerrainType(-quarterMap, quarterMap, TerrainType.Lordaeron_Winter_Rock, -1, 
+  SetTerrainType(-quarterMap, quarterMap, TerrainType.lordaeron_Winter_Rock, -1, 
       (mapSize / 4).round() + 1, 1)
   // First make it all unpathable
   executeIter = 0
@@ -275,7 +275,7 @@ function generateMountains()
   executeHlIter = mountainNodes.iterator()
   executeWhile(1, () -> executeHlIter.hasNext()) ->
     let node = executeHlIter.next()
-    SetTerrainType(node.getMapPos().x, node.getMapPos().y, TerrainType.Lordaeron_Winter_Snow, 
+    SetTerrainType(node.getMapPos().x, node.getMapPos().y, TerrainType.lordaeron_Winter_Snow, 
         -1, node.radius + 1, 0)
     forPositionsInCircle(node.getMapPos(), node.radius * TILE_SIZE, PATHING_INCREMENT) p -> 
       SetTerrainPathable(p.x, p.y, PATHING_TYPE_WALKABILITY, true)
@@ -293,7 +293,7 @@ function raiseMountains()
       if (x > (mapPlayAreaRadius / 2) and y > (mapPlayAreaRadius / 2)) 
             or (vec2(x.toReal(), y.toReal()).length() > mapPlayAreaRadius / 2)
         let terrain = GetTerrainType(-x * TILE_SIZE, y * TILE_SIZE)
-        if terrain == TerrainType.Lordaeron_Winter_Rock
+        if terrain == TerrainType.lordaeron_Winter_Rock
           var pos = vec2(-x.toReal(), y.toReal())
           var minDist = min(
             pos.length() - (mapPlayAreaRadius / 2),
@@ -310,16 +310,16 @@ function raiseMountains()
 
 /** Create the barrens*/    
 function generateBarrens()
-  SetTerrainType(quarterMap, -quarterMap, TerrainType.Barrens_Desert, -1,
+  SetTerrainType(quarterMap, -quarterMap, TerrainType.barrens_Desert, -1,
       (mapSize / 4).round() + 1, 1)
   execute() ->
     for Node node in barrenNodes
       SetTerrainType(node.getMapPos().x, node.getMapPos().y,
-          TerrainType.Lordaeron_Summer_Dirt, -1, node.radius, 0)
+          TerrainType.lordaeron_Summer_Dirt, -1, node.radius, 0)
 
 /** */    
 function generateFields()
-  SetTerrainType(0, 0, TerrainType.Lordaeron_Summer_Grass, -1, (mapPlayAreaRadius / 2).round(), 0)
+  SetTerrainType(0, 0, TerrainType.lordaeron_Summer_Grass, -1, (mapPlayAreaRadius / 2).round(), 0)
 
 /** This connects all of the nodes to each other, making the paths different for each biome */    
 function connectNodes()
@@ -341,17 +341,17 @@ function connectNodes()
               TerrainDeformCrater(pos.x, pos.y,
                   TILE_SIZE * 2, -TILE_SIZE / 4, 0, true)
               SetTerrainType(pos.x, pos.y,
-                  TerrainType.Sunken_Ruins_Small_Bricks, -1, 1, 0)
+                  TerrainType.sunken_Ruins_Small_Bricks, -1, 1, 0)
               // pathing updates
               forPositionsInCircle(pos, islandBridgeWidth, PATHING_INCREMENT) pos2 ->
                 SetTerrainPathable(pos2.x, pos2.y, PATHING_TYPE_WALKABILITY, true)
             case Forest
-              SetTerrainType(pos.x, pos.y, TerrainType.Ashenvale_Vines, -1, 2, 0)
+              SetTerrainType(pos.x, pos.y, TerrainType.ashenvale_Vines, -1, 2, 0)
               forDestructableInCircle(pos, TILE_SIZE * 1.5) des ->
                 des.remove()
             case Mountains
               SetTerrainType(pos.x, pos.y,
-                TerrainType.Lordaeron_Winter_Snow, -1, 2, 0)
+                TerrainType.lordaeron_Winter_Snow, -1, 2, 0)
               // pathing updates
               forPositionsInCircle(pos, TILE_SIZE, PATHING_INCREMENT) pos2 ->
                 SetTerrainPathable(pos2.x, pos2.y, PATHING_TYPE_WALKABILITY, true)
@@ -361,13 +361,13 @@ function connectNodes()
                 des.remove()
             case Barrens
               SetTerrainType(pos.x, pos.y,
-                TerrainType.Lordaeron_Summer_Dirt, -1, 2, 0)
+                TerrainType.lordaeron_Summer_Dirt, -1, 2, 0)
               // Remove destructables, as the forest may have leaked 
               forDestructableInCircle(pos, TILE_SIZE * 1.5) des ->
                 des.remove()
             case Fields
               SetTerrainType(pos.x, pos.y, 
-                TerrainType.Lordaeron_Summer_Dirt, -1, 2, 0)
+                TerrainType.lordaeron_Summer_Dirt, -1, 2, 0)
     // remove this node from the neighbors set to not redraw paths
     node.hasPaths = true
 
