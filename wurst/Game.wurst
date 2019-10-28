@@ -4,6 +4,7 @@ import GenerateTerrain
 import Globals
 import RegisterEvents
 import ClosureTimers
+import UnitUtils
 
 init
   kPlayer_Kingdom.setName("The Kingdom")
@@ -39,7 +40,7 @@ function setCamBounds()
 
 function createUnits()
   // Create king, he gets items that others don't
-  createUnit(kPlayer_King, kUID_Villager, kRect_PlayArea.getCenter(), GetRandomDirectionDeg().asAngleDegrees())
+  createKingdomUnit(kPlayer_King, kUID_Villager, kRect_PlayArea.getCenter(), GetRandomDirectionDeg().asAngleDegrees())
         ..setProperName(kPlayer_King.getName())
         ..addItemById(kIID_Building_Castle)
         ..setName("King")
@@ -47,6 +48,6 @@ function createUnits()
   for i = 1 to bj_MAX_PLAYER_SLOTS
     if players[i].isIngame()
       let pos = kRect_PlayArea.randomPoint()
-      createUnit(players[i], kUID_Villager, pos, GetRandomDirectionDeg().asAngleDegrees())
+      createKingdomUnit(players[i], kUID_Villager, pos, GetRandomDirectionDeg().asAngleDegrees())
         ..setProperName(players[i].getName())
       SetCameraPositionForPlayer(players[i], pos.x, pos.y)
