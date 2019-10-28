@@ -3,75 +3,73 @@ package ItemCreation
 import ItemObjEditing
 
 public enum ItemType
-    ProfessionTools
-    Resource
-    Consumable
-    Building
-    Equipment
+  ProfessionTools
+  Resource
+  Consumable
+  Building
+  Equipment
 
 public enum EquipmentClass
-    Weapon
-    Armor
-    Offhand
-    Boots
-    Helm
-    Accessory
+  Weapon
+  Armor
+  Offhand
+  Boots
+  Helm
+  Accessory
 
 function ItemType.getColor() returns color
-    color result = COLOR_BLACK.withoutAlpha()
-    switch this
-        case ProfessionTools
-            result = fromHexString("ff804000").withoutAlpha()
-        case Resource
-            result = fromHexString("ff008000").withoutAlpha()
-        case Consumable
-            result = fromHexString("ff800080").withoutAlpha()
-        case Building
-            result = fromHexString("ff0080FF").withoutAlpha()
-        case Equipment
-            result = fromHexString("ff800000").withoutAlpha()
-    return result
+  color result = COLOR_BLACK.withoutAlpha()
+  switch this
+    case ProfessionTools
+      result = fromHexString("ff804000").withoutAlpha()
+    case Resource
+      result = fromHexString("ff008000").withoutAlpha()
+    case Consumable
+      result = fromHexString("ff800080").withoutAlpha()
+    case Building
+      result = fromHexString("ff0080FF").withoutAlpha()
+    case Equipment
+      result = fromHexString("ff800000").withoutAlpha()
+  return result
 
 function ItemType.getName() returns string
-    var result = ""
-    switch this
-        case ProfessionTools
-            result = "Profession Equipment"
-        case Resource
-            result = "Resource"
-        case Consumable
-            result = "Consumable"
-        case Building
-            result = "Structure"
-        case Equipment
-            result = "Equipment"
-    return result
+  var result = ""
+  switch this
+    case ProfessionTools
+      result = "Profession Equipment"
+    case Resource
+      result = "Resource"
+    case Consumable
+      result = "Consumable"
+    case Building
+      result = "Structure"
+    case Equipment
+      result = "Equipment"
+  return result
 
 function ItemType.getColoredName() returns string
-    return this.getColor().toColorString() + this.getName() + "|r"
+  return this.getColor().toColorString() + this.getName() + "|r"
 
 public function getItemDef(int newId, string name, string description, string icon, ItemType itmType) returns ItemDefinition
-    return getItemDef(newId, name, description, icon, itmType, "")
+  return getItemDef(newId, name, description, icon, itmType, "")
 
 public function getItemDef(int newId, string name, string description, string icon, ItemType itmType, string model) returns ItemDefinition
-    let def = new ItemDefinition(newId, 'ches')
-        ..setName(name)
-        ..setTooltipBasic(name)
-        ..setDescription(itmType.getColoredName() + "\n\n" + description)
-        ..setTooltipExtended(itmType.getColoredName() + "\n" + description)
-        ..setInterfaceIcon(icon)
-        ..setGoldCost(0)
-        ..setLumberCost(0)
-        ..setTintingColor1Red(itmType.getColor().red)
-        ..setTintingColor2Green(itmType.getColor().green)
-        ..setTintingColor3Blue(itmType.getColor().blue)
-        // ..setClassification(itmType.getName())
-    if model != null and model != ""
-        def.setModelUsed(model)
-    if itmType == ItemType.Consumable or itmType == ItemType.ProfessionTools or itmType == ItemType.Building
-        def.setActivelyUsed(true)
-    else
-        def.setActivelyUsed(false)
-        
-
-    return def
+  let def = new ItemDefinition(newId, 'ches')
+    ..setName(name)
+    ..setTooltipBasic(name)
+    ..setDescription(itmType.getColoredName() + "\n\n" + description)
+    ..setTooltipExtended(itmType.getColoredName() + "\n" + description)
+    ..setInterfaceIcon(icon)
+    ..setGoldCost(0)
+    ..setLumberCost(0)
+    ..setTintingColor1Red(itmType.getColor().red)
+    ..setTintingColor2Green(itmType.getColor().green)
+    ..setTintingColor3Blue(itmType.getColor().blue)
+    // ..setClassification(itmType.getName())
+  if model != null and model != ""
+    def.setModelUsed(model)
+  if itmType == ItemType.Consumable or itmType == ItemType.ProfessionTools or itmType == ItemType.Building
+    def.setActivelyUsed(true)
+  else
+    def.setActivelyUsed(false)
+  return def

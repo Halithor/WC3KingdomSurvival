@@ -1,0 +1,105 @@
+package GenTerrainUtils
+import LinkedList
+
+
+
+public interface DestructableCallback
+  function callback(destructable u)
+
+/** This is used as dummy in the GroupEnum calls and should not be used */
+constant DUMMY_GROUP = CreateGroup()
+
+// ====Callback stack for nested usage====
+DestructableCallback array tempCallbacks
+var tempCallbacksCount = 0
+var maxCount = INT_MAX
+var iterCount = 0
+constant filter = Filter(() -> filterCallback(GetFilterDestructable()))
+
+function filterCallback(destructable filter)
+  if iterCount < maxCount
+    currentCallback().callback(filter)
+  iterCount++
+
+function pushCallback(DestructableCallback c)
+  tempCallbacks[tempCallbacksCount] = c
+  tempCallbacksCount++
+  iterCount = 0
+  maxCount = INT_MAX
+
+function popCallback()
+  DUMMY_GROUP.clear()
+  tempCallbacksCount--
+  destroy tempCallbacks[tempCallbacksCount]
+
+function currentCallback() returns DestructableCallback
+  return tempCallbacks[tempCallbacksCount - 1]
+
+public function forDestructablesInRect(rect r, DestructableCallback c)
+  pushCallback(c)
+  EnumDestructablesInRect(r, filter, null)
+  popCallback()
+
+public function forDestructableInCircle(vec2 center, real radius, DestructableCallback c) 
+  let distLimitSq = radius * radius
+  forDestructablesInRect(
+    Rect(
+      center.x - radius, center.y - radius, 
+      center.x + radius, center.y + radius)) d -> 
+        if d.getPos().distanceToSq(center) < distLimitSq
+          c.callback(d)
+
+interface PositionAction
+  function run(vec2 pos)
+
+public function forPositionsInRect(rect r, real increment, PositionAction pa)
+  for y = 0 to ((r.getMaxY() - r.getMinY()).abs() / increment).round()
+    for x = 0 to ((r.getMaxX() - r.getMinX()).abs() / increment).round()
+      let pos = vec2(r.getMinX(), r.getMinY()) 
+        + vec2(increment / 2, increment / 2)
+        + vec2(x * increment, y * increment)
+      pa.run(pos)
+    
+public function forPositionsInCircle(vec2 center, real radius, real increment, PositionAction pa)
+  let distLimitSq = radius * radius
+  let steps = (radius / increment).round()
+  for y = 0 to steps
+    for x = 0 to steps
+      let offset = vec2((increment / 2) + (x * increment), (increment / 2) + (y * increment))
+      if offset.lengthSq() < distLimitSq
+        pa.run(center + (vec2(1, 1) * offset))
+        pa.run(center + (vec2(-1, 1) * offset))
+        pa.run(center + (vec2(1, -1) * offset))
+        pa.run(center + (vec2(-1, -1) * offset))
+
+public function forPositionsInLine(vec2 start, vec2 target, real increment, PositionAction pa)
+  // steps are floored to not overshoot. We then shift the iner actions into the center
+  let distance = start.distanceTo(target)
+  let steps = (distance / increment).floor()
+  var difference = distance - (steps * increment)
+  if (difference > increment / 2)
+    difference = 0
+    pa.run(target)
+  for i = 0 to steps
+    let pos = start.moveTowards(target, (difference / 2) + i * increment)
+    pa.run(pos)
+
+
+// public function setPathingInCircle(vec2 center, real radius, LinkedList<terrainPathability> tp)
+  
+        
+// function drawTerrainLine(vec2 start, vec2 goal, int radius, int terrainType)
+//     let distance = start.distanceTo(goal)
+//     let count = distance.round() div 128
+//     for i = 0 to count
+//         let pos = start.moveTowards(goal, TILE_SIZE * i)
+//         SetTerrainType(pos.x, pos.y, terrainType, -1, radius, 0)
+//     SetTerrainType(goal.x, goal.y, terrainType, -1, radius, 0)
+
+// function displayTerrain()    
+//     DisplayTextToForce(bj_FORCE_ALL_PLAYERS, "Nodes: " + nodes.size().toString())
+//     for Node node in nodes
+//         SetTerrainType(node.x.toReal() * TILE_SIZE, node.y.toReal() * TILE_SIZE, TerrainType.Underground_Lava, -1, node.radius, 0)
+//         print("Node with " + node.adjacent.size().toString() + " neighbors")
+//         for Node neighbor in node.adjacent
+//             drawTerrainLine(node.getPos() * TILE_SIZE, neighbor.getPos() * TILE_SIZE, 1, TerrainType.Underground_Lava_Cracks)

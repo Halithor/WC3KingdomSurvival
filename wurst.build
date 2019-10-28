@@ -1,11 +1,10 @@
 ---
-projectName: "KingdomSurvival"
+projectName: KingdomSurvival
 dependencies:
-- "https://github.com/wurstscript/wurstStdlib2"
-- "https://github.com/Halithor/HalithorsRecipeSystem"
-- "https://github.com/Halithor/WC3AttributeSystem"
+- https://github.com/wurstscript/wurstStdlib2
+- https://github.com/Halithor/HalithorsRecipeSystem
+- https://github.com/Halithor/WC3AttributeSystem
 buildMapData:
-  name: "Kingdom Survival v0.01"
-  fileName: "KingdomSurvival_v0.01"
-  author: "Halithor"
-  playerCount: 8
+  name: Kingdom Survival v0.03
+  fileName: KingdomSurvival_v0.03
+  author: Halithor

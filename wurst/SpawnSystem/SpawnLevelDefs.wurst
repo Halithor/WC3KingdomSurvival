@@ -9,115 +9,115 @@ import LinkedList
 
 
 function defineForestCreatures()
-    let level = new SpawnLevel()
-    level.roundDelay = 15 // 4 rounds per minute
-    // Creep definitions
-    let rat = defineCreep(UID_RAT, "Rat", Icons.bTNYouDirtyRat, Units.rat1, 1.2, AttackTypeKS.Beast, 40, 1, 0.5, 0.2, ArmorTypeKS.Unarmored, 0.2, 0.5, 2, 0, 0, 300, 15, MovementType.Foot)
-    let dog = defineCreep(UID_DOG, "Dog", Icons.bTNWolf, Units.brownWolf1, 1.0, AttackTypeKS.Beast, 60, 1.5, 0.8, .3, ArmorTypeKS.Unarmored, 0.5, 0.9, 1.5, 0, 0, 330, 31, MovementType.Foot)
-    let bear = defineCreep(UID_BEAR, "Bear", Icons.bTNGrizzlyBear, Units.grizzlyBear, 0.7, AttackTypeKS.Bludgeoning, 90, 3, 3, 0.5, ArmorTypeKS.Leather, 2, 2, 3, 0, 0, 250, 47, MovementType.Foot)
-    let bird = defineCreep(UID_BIRD, "Hawk", Icons.bTNWarEagle, Units.warEagle1, 0.9, AttackTypeKS.Beast, 450, 2.0, 1, .2, ArmorTypeKS.Unarmored, 0.2, .8, 1, 1, 1, 350, 31, MovementType.Fly)
-    let boar = defineCreep(UID_BOAR, "Boar", Icons.bTNQuillBeast, Units.quillBeast, 0.9, AttackTypeKS.Piercing, 200, 1.5, 1, 0.5, ArmorTypeKS.Leather, 0.5, 0.7, 1, 0, 0, 290, 31, MovementType.Foot)
-    let forestBoss = defineCreep(UID_FOREST_BOSS, "Great Furbolg", Icons.bTNFurbolg, Units.furbolgElder, 3, AttackTypeKS.Bludgeoning, 110, 2.0, 5.0, 0.3, ArmorTypeKS.Blessed, 3, 10, 2, 2, 2, 300, 128, MovementType.Foot)
-    // Put creeps in level
-    level.creeps = asList(rat, dog, bear, bird, boar)
-    level.boss = forestBoss
-    
-    level.rounds = asList(
-        rnd(1, asList(
-            cw(UID_RAT, 1)
-        )),
-        rnd(2, asList(
-            cw(UID_RAT, 1)
-        )),
-        rnd(3, asList(
-            cw(UID_RAT, 1)
-        )),
-        rnd(3, asList(
-            cw(UID_RAT, 2),
-            cw(UID_DOG, 1)
-        )),
-        // 5
-        rnd(3, asList(
-            cw(UID_RAT, 1),
-            cw(UID_DOG, 1)
-        )),
-        rnd(2, asList(
-            cw(UID_RAT, 1),
-            cw(UID_DOG, 2)
-        )),
-        rnd(2, asList(
-            cw(UID_RAT, 1),
-            cw(UID_DOG, 2),
-            cw(UID_BIRD, 1)
-        )),
-        rnd(3, asList(
-            cw(UID_RAT, 1),
-            cw(UID_DOG, 2),
-            cw(UID_BIRD, 1)
-        )),
-        rnd(3, asList(
-            cw(UID_RAT, 1),
-            cw(UID_DOG, 2),
-            cw(UID_BIRD, 2),
-            cw(UID_BOAR, 2)
-        )),
-        // 10
-        rnd(4, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 1),
-            cw(UID_BOAR, 1)
-        )),
-        rnd(2, asList(
-            cw(UID_BIRD, 1)
-        )),
-        rnd(4, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 1),
-            cw(UID_BOAR, 1)
-        )),
-        rnd(5, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 1),
-            cw(UID_BOAR, 1)
-        )),
-        rnd(4, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 1),
-            cw(UID_BOAR, 1)
-        )),
-        // 15
-        rnd(1, asList(
-            cw(UID_BEAR, 1)
-        )),
-        rnd(2, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 1),
-            cw(UID_BOAR, 1),
-            cw(UID_BEAR, 1)
-        )),
-        rnd(2, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 2),
-            cw(UID_BOAR, 2),
-            cw(UID_BEAR, 2)
-        )),
-        rnd(3, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 2),
-            cw(UID_BOAR, 2),
-            cw(UID_BEAR, 2)
-        )),
-        rnd(2, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 2),
-            cw(UID_BOAR, 2),
-            cw(UID_BEAR, 2)
-        )),
-        // 20
-        rnd(4, asList(
-            cw(UID_DOG, 1),
-            cw(UID_BIRD, 2),
-            cw(UID_BOAR, 2),
-            cw(UID_BEAR, 2)
-        ))
-    )
+  let level = new SpawnLevel()
+  level.roundDelay = 15 // 4 rounds per minute
+  // Creep definitions
+  let rat = defineCreep(UID_RAT, "Rat", Icons.bTNYouDirtyRat, Units.rat1, 1.2, AttackTypeKS.Beast, 40, 1, 0.5, 0.2, ArmorTypeKS.Unarmored, 0.2, 0.5, 2, 0, 0, 300, 15, MovementType.Foot)
+  let dog = defineCreep(UID_DOG, "Dog", Icons.bTNWolf, Units.brownWolf1, 1.0, AttackTypeKS.Beast, 60, 1.5, 0.8, .3, ArmorTypeKS.Unarmored, 0.5, 0.9, 1.5, 0, 0, 330, 31, MovementType.Foot)
+  let bear = defineCreep(UID_BEAR, "Bear", Icons.bTNGrizzlyBear, Units.grizzlyBear, 0.7, AttackTypeKS.Bludgeoning, 90, 3, 3, 0.5, ArmorTypeKS.Leather, 2, 2, 3, 0, 0, 250, 47, MovementType.Foot)
+  let bird = defineCreep(UID_BIRD, "Hawk", Icons.bTNWarEagle, Units.warEagle1, 0.9, AttackTypeKS.Beast, 450, 2.0, 1, .2, ArmorTypeKS.Unarmored, 0.2, .8, 1, 1, 1, 350, 31, MovementType.Fly)
+  let boar = defineCreep(UID_BOAR, "Boar", Icons.bTNQuillBeast, Units.quillBeast, 0.9, AttackTypeKS.Piercing, 200, 1.5, 1, 0.5, ArmorTypeKS.Leather, 0.5, 0.7, 1, 0, 0, 290, 31, MovementType.Foot)
+  let forestBoss = defineCreep(UID_FOREST_BOSS, "Great Furbolg", Icons.bTNFurbolg, Units.furbolgElder, 3, AttackTypeKS.Bludgeoning, 110, 2.0, 5.0, 0.3, ArmorTypeKS.Blessed, 3, 10, 2, 2, 2, 300, 128, MovementType.Foot)
+  // Put creeps in level
+  level.creeps = asList(rat, dog, bear, bird, boar)
+  level.boss = forestBoss
+  
+  level.rounds = asList(
+    rnd(1, asList(
+      cw(UID_RAT, 1)
+    )),
+    rnd(2, asList(
+      cw(UID_RAT, 1)
+    )),
+    rnd(3, asList(
+      cw(UID_RAT, 1)
+    )),
+    rnd(3, asList(
+      cw(UID_RAT, 2),
+      cw(UID_DOG, 1)
+    )),
+    // 5
+    rnd(3, asList(
+      cw(UID_RAT, 1),
+      cw(UID_DOG, 1)
+    )),
+    rnd(2, asList(
+      cw(UID_RAT, 1),
+      cw(UID_DOG, 2)
+    )),
+    rnd(2, asList(
+      cw(UID_RAT, 1),
+      cw(UID_DOG, 2),
+      cw(UID_BIRD, 1)
+    )),
+    rnd(3, asList(
+      cw(UID_RAT, 1),
+      cw(UID_DOG, 2),
+      cw(UID_BIRD, 1)
+    )),
+    rnd(3, asList(
+      cw(UID_RAT, 1),
+      cw(UID_DOG, 2),
+      cw(UID_BIRD, 2),
+      cw(UID_BOAR, 2)
+    )),
+    // 10
+    rnd(4, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 1),
+      cw(UID_BOAR, 1)
+    )),
+    rnd(2, asList(
+      cw(UID_BIRD, 1)
+    )),
+    rnd(4, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 1),
+      cw(UID_BOAR, 1)
+    )),
+    rnd(5, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 1),
+      cw(UID_BOAR, 1)
+    )),
+    rnd(4, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 1),
+      cw(UID_BOAR, 1)
+    )),
+    // 15
+    rnd(1, asList(
+      cw(UID_BEAR, 1)
+    )),
+    rnd(2, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 1),
+      cw(UID_BOAR, 1),
+      cw(UID_BEAR, 1)
+    )),
+    rnd(2, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 2),
+      cw(UID_BOAR, 2),
+      cw(UID_BEAR, 2)
+    )),
+    rnd(3, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 2),
+      cw(UID_BOAR, 2),
+      cw(UID_BEAR, 2)
+    )),
+    rnd(2, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 2),
+      cw(UID_BOAR, 2),
+      cw(UID_BEAR, 2)
+    )),
+    // 20
+    rnd(4, asList(
+      cw(UID_DOG, 1),
+      cw(UID_BIRD, 2),
+      cw(UID_BOAR, 2),
+      cw(UID_BEAR, 2)
+    ))
+  )

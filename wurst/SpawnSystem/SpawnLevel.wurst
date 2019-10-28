@@ -2,69 +2,69 @@ package SpawnLevel
 import LinkedList
 
 public class Creep
-    /** This is the base unit that the creep will be based on for visuals and certain attack characteristics. */
-    int unitId
-    string name
-    /** All the following statitics are relative to the level */
-    real maxLife = 1.0
-    real regenLife = 1.0
-    real maxMana = 0.0
-    real regenMana = 1.0
-    real attackDmg = 1.0
-    real armor = 1.0
+  /** This is the base unit that the creep will be based on for visuals and certain attack characteristics. */
+  int unitId
+  string name
+  /** All the following statitics are relative to the level */
+  real maxLife = 1.0
+  real regenLife = 1.0
+  real maxMana = 0.0
+  real regenMana = 1.0
+  real attackDmg = 1.0
+  real armor = 1.0
 
-    /** Other attack characteristics */
-    real attackCd = 2.0
-    real attackRolled = 0.2
-    /** Movement */
-    real movespeed = 250
+  /** Other attack characteristics */
+  real attackCd = 2.0
+  real attackRolled = 0.2
+  /** Movement */
+  real movespeed = 250
 
-    construct(int unitId, real maxLife, real regenLife, real maxMana, real regenMana, 
-            real attackDmg, real armor, real attackCd, real attackRolled, real movespeed)
-        this.unitId = unitId
-        this.maxLife = maxLife
-        this.regenLife = regenLife
-        this.maxMana = maxMana
-        this.regenMana = regenMana
-        this.attackDmg = attackDmg
-        this.armor = armor
-        this.attackCd = attackCd
-        this.attackRolled = attackRolled
-        this.movespeed = movespeed
+  construct(int unitId, real maxLife, real regenLife, real maxMana, real regenMana, 
+      real attackDmg, real armor, real attackCd, real attackRolled, real movespeed)
+    this.unitId = unitId
+    this.maxLife = maxLife
+    this.regenLife = regenLife
+    this.maxMana = maxMana
+    this.regenMana = regenMana
+    this.attackDmg = attackDmg
+    this.armor = armor
+    this.attackCd = attackCd
+    this.attackRolled = attackRolled
+    this.movespeed = movespeed
 
 public class CreepWeight
-    int uid
-    int weight
+  int uid
+  int weight
 
-    construct(int uid, int weight)
-        this.uid = uid
-        this.weight = weight
+  construct(int uid, int weight)
+    this.uid = uid
+    this.weight = weight
 
 // Shorthand function for constructing creep weights
 public function cw(int uid, int weight) returns CreepWeight
-    return new CreepWeight(uid, weight)
+  return new CreepWeight(uid, weight)
 
 public class Round
-    // The number of creeps to spawn per target.
-    int creepCount
-    LinkedList<CreepWeight> weights
+  // The number of creeps to spawn per target.
+  int creepCount
+  LinkedList<CreepWeight> weights
 
-    construct(int count, LinkedList<CreepWeight> weights)
-        this.creepCount = count
-        this.weights = weights
+  construct(int count, LinkedList<CreepWeight> weights)
+    this.creepCount = count
+    this.weights = weights
 
 public function rnd(int count, LinkedList<CreepWeight> weights) returns Round
-    return new Round(count, weights)
+  return new Round(count, weights)
 
 public class SpawnLevel
-    // Textual parts of a level
-    string name
-    string fluffStart
-    // List of creeps that can be spawned for this level
-    LinkedList<Creep> creeps
-    // The delay between each round
-    int roundDelay
-    // The rounds of this level
-    LinkedList<Round> rounds
-    // Boss creep stats: his multiplier are applied to the boss stat block.
-    Creep boss
+  // Textual parts of a level
+  string name
+  string fluffStart
+  // List of creeps that can be spawned for this level
+  LinkedList<Creep> creeps
+  // The delay between each round
+  int roundDelay
+  // The rounds of this level
+  LinkedList<Round> rounds
+  // Boss creep stats: his multiplier are applied to the boss stat block.
+  Creep boss

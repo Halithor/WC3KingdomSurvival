@@ -5,10 +5,10 @@ import Globals
 
 @compiletime 
 function genAbilityDefs()
-    new AbilityDefinitionInventory(kAID_Inv)
-        ..setDropItemsOnDeath(1, true)
-        ..setCanUseItems(1, true)
-    new AbilityDefinitionInventory(kAID_InvBasic)
-        ..setDropItemsOnDeath(1, true)
-        ..setCanUseItems(1, false)
-    
+  new AbilityDefinitionInventory(kAID_Inv)
+    ..setDropItemsOnDeath(1, true)
+    ..setCanUseItems(1, true)
+  new AbilityDefinitionInventory(kAID_InvBasic)
+    ..setDropItemsOnDeath(1, true)
+    ..setCanUseItems(1, false)
+  

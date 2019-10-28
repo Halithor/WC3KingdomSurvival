@@ -9,25 +9,25 @@ import Assets
 import ItemCreation
 
 function repeatList(int unitId) returns string
-    return commaList(unitId, unitId, unitId, unitId)
+  return commaList(unitId, unitId, unitId, unitId)
 
 function createBuildingItemDef(int newId, string name, string description, string icon, int buildingConstructed, real buildTime) returns ItemDefinition
-    let abilId = ABIL_ID_GEN.next()
-    new AbilityDefinitionBuildTinyScoutTower(abilId)
-        ..setUnitCreatedperplayerrace(1, repeatList(buildingConstructed))
-        ..setDurationHero(1, buildTime)
-        ..setDurationNormal(1, buildTime)
-    return getItemDef(newId, name, description, icon, ItemType.Building)
-        ..setAbilities(abilId.toRawCode())
-        ..setNumberofCharges(1)
-        ..setPerishable(true)
+  let abilId = ABIL_ID_GEN.next()
+  new AbilityDefinitionBuildTinyScoutTower(abilId)
+    ..setUnitCreatedperplayerrace(1, repeatList(buildingConstructed))
+    ..setDurationHero(1, buildTime)
+    ..setDurationNormal(1, buildTime)
+  return getItemDef(newId, name, description, icon, ItemType.Building)
+    ..setAbilities(abilId.toRawCode())
+    ..setNumberofCharges(1)
+    ..setPerishable(true)
 
 @compiletime
 function genItemBuildings()
-    createBuildingItemDef(kIID_Building_Castle, 
-        "Establish your Castle", 
-        "Establishes the location of your castle. The castle serves as the center of your kingdom and its death will result in defeat.", 
-        Icons.bTNCastle, kUID_Castle, 0.5)
-        ..setCanBeDropped(false)
-        
-        
+  createBuildingItemDef(kIID_Building_Castle, 
+    "Establish your Castle", 
+    "Establishes the location of your castle. The castle serves as the center of your kingdom and its death will result in defeat.", 
+    Icons.bTNCastle, kUID_Castle, 0.5)
+    ..setCanBeDropped(false)
+    
+    

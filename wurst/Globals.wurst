@@ -3,14 +3,19 @@ package Globals
 import ObjectIdGenerator
 import ObjectIds
 
+public constant mapSize = 128
 public constant mapPlayAreaRadius = 44
+/** The size of a tile, for x,y and z */
+public constant TILE_SIZE = 128.0
+public constant PATHING_INCREMENT = 32.0
+public constant WATER_DEPRESSION = TILE_SIZE
 
-constant cameraBoundOffset = mapPlayAreaRadius * 128
+constant cameraBoundOffset = mapPlayAreaRadius * TILE_SIZE
 public constant kRect_PlayArea = Rect(
-    GetPlayableMapRect().getCenter().x - cameraBoundOffset, 
-    GetPlayableMapRect().getCenter().y - cameraBoundOffset, 
-    GetPlayableMapRect().getCenter().x + cameraBoundOffset, 
-    GetPlayableMapRect().getCenter().y + cameraBoundOffset)
+  GetPlayableMapRect().getCenter().x - cameraBoundOffset, 
+  GetPlayableMapRect().getCenter().y - cameraBoundOffset, 
+  GetPlayableMapRect().getCenter().x + cameraBoundOffset, 
+  GetPlayableMapRect().getCenter().y + cameraBoundOffset)
 
 public constant kPlayer_Kingdom = players[9]
 public constant kPlayer_King = players[0]
@@ -38,6 +43,14 @@ public constant kAID_ShopPurchaseItem = 'Apit'
 // ============= Items =============
 public constant kIID_Building_Castle = compiletime(ITEM_ID_GEN.next())
 
+// === Destructables ===
+public constant kDID_Tree_Forest = 'ATtr'
+public constant kDID_Tree_Island = 'ZTtw'
+public constant kDID_Tree_Barrens = 'BTtw'
+public constant kDID_Tree_Mountains = 'WTst'
+public constant kDID_Tree_Fields = 'LTlt'
+
+
 // helpers
 public function getHeroAbilities() returns string
-    return commaList(kAID_HeroConstitution, kAID_HeroDexterity, kAID_HeroIntellect, kAID_HeroLuck)
+  return commaList(kAID_HeroConstitution, kAID_HeroDexterity, kAID_HeroIntellect, kAID_HeroLuck)

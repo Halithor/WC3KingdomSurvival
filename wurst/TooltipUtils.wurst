@@ -8,67 +8,67 @@ constant colorEffectHeader = "|cffccff00"
 constant colorEffects = "|cff99cc00"
 
 public function asPercent(real value) returns string
-    return (value * 100).round().toString() + "%"
+  return (value * 100).round().toString() + "%"
 
 public interface EffectValue
-    function getStr(int lvl) returns string
+  function getStr(int lvl) returns string
 
 public tuple effectPair(string name, EffectValue value)
 
 class EffectProducer
-    LinkedList<EffectValue> effectValues = new LinkedList<EffectValue>()
-    LinkedList<string> effectNames = new LinkedList<string>()
-    int count
+  LinkedList<EffectValue> effectValues = new LinkedList<EffectValue>()
+  LinkedList<string> effectNames = new LinkedList<string>()
+  int count
 
-    function add(effectPair pair)
-        count++
-        effectNames.add(pair.name)
-        effectValues.add(pair.value)
+  function add(effectPair pair)
+    count++
+    effectNames.add(pair.name)
+    effectValues.add(pair.value)
 
 public function ttNormal(string txt, int lvl) returns string
-    return ttNormal(txt, "", lvl)
+  return ttNormal(txt, "", lvl)
 
 public function ttNormal(string txt, string hotkey, int lvl) returns string
-    var val = txt
-    if hotkey != "" and hotkey != null
-        val += " [" + colorHotkey + hotkey + "|r]"
-    if lvl <= 0
-        val += " - [" + colorLevel + "Level %d|r]"
-    else
-        val += " - [" + colorLevel + "Level " + lvl.toString() + "|r]"
-    return val
+  var val = txt
+  if hotkey != "" and hotkey != null
+    val += " [" + colorHotkey + hotkey + "|r]"
+  if lvl <= 0
+    val += " - [" + colorLevel + "Level %d|r]"
+  else
+    val += " - [" + colorLevel + "Level " + lvl.toString() + "|r]"
+  return val
 
 public function ttNormalExtended(string description, int lvl, EffectProducer producer) returns string
-    var resultStr = description + "|r"
-        + "\n\n" + colorEffectHeader + "Effects|r:\n" + colorEffects
-    
-    for i = 0 to producer.count - 1
-        let value = producer.effectValues.get(i).getStr(lvl)
-        let name = producer.effectNames.get(i)
-        if value.ltrim().startsWith("-")
-            resultStr += value + " " + name
-        else 
-            resultStr += "+" + value + " " + name
-        resultStr += "\n"
-    return resultStr.rtrim("\n")
+  var resultStr = description + "|r"
+    + "\n\n" + colorEffectHeader + "Effects|r:\n" + colorEffects
+  
+  for i = 0 to producer.count - 1
+    let value = producer.effectValues.get(i).getStr(lvl)
+    let name = producer.effectNames.get(i)
+    if value.ltrim().startsWith("-")
+      resultStr += value + " " + name
+    else 
+      resultStr += "+" + value + " " + name
+    resultStr += "\n"
+  return resultStr.rtrim("\n")
 
 public function ttLearn(string txt, string hotkey) returns string
-    return ttNormal(txt, hotkey, 0)
+  return ttNormal(txt, hotkey, 0)
 
 public function ttLearnExtended(string description, int maxLvl, EffectProducer producer) returns string
-    var value =  description + "|r"
-        + "\n\n" + colorEffectHeader + "Effects|r:\n" + colorEffects
+  var value =  description + "|r"
+    + "\n\n" + colorEffectHeader + "Effects|r:\n" + colorEffects
 
-    for i = 0 to producer.count - 1
-        var line = "+"
-        for lvl = 1 to maxLvl
-            line += producer.effectValues.get(i).getStr(lvl) + "/"
-        line = line.rtrim("/") + " " + producer.effectNames.get(i)
-        value += line + "\n"
-    return value.rtrim("\n")
+  for i = 0 to producer.count - 1
+    var line = "+"
+    for lvl = 1 to maxLvl
+      line += producer.effectValues.get(i).getStr(lvl) + "/"
+    line = line.rtrim("/") + " " + producer.effectNames.get(i)
+    value += line + "\n"
+  return value.rtrim("\n")
 
 public function effectList(vararg effectPair effects) returns EffectProducer
-    let producer = new EffectProducer()
-    for eff in effects
-        producer.add(eff)
-    return producer
+  let producer = new EffectProducer()
+  for eff in effects
+    producer.add(eff)
+  return producer

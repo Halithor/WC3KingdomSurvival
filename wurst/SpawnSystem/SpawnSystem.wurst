@@ -9,10 +9,10 @@ import ColorCodes
  *  it is called when the castle is placed.
  */
 public function beginSpawning()
+  doAfter(30) ->
+    DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 10, ccFluff + "The land is becoming restless. The wind leaves you with an unnatural chill. Something is coming...")
     doAfter(30) ->
-        DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 10, ccFluff + "The land is becoming restless. The wind leaves you with an unnatural chill. Something is coming...")
-        doAfter(30) ->
-            DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 10, ccFluff + "A strong gust hits you, the odor of death sharply pierces your nostriles. Prepare your weapons.")
+      DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 10, ccFluff + "A strong gust hits you, the odor of death sharply pierces your nostriles. Prepare your weapons.")
 
 
 
