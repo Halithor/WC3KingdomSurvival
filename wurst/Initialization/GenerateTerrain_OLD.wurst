@@ -1,0 +1,374 @@
+package GenerateTerrain_OLD
+
+import Globals
+import TerrainTypes
+import LinkedList
+import HashSet
+import Execute
+import GenTerrainUtils
+
+constant quarterMap = (mapSize / 4) * TILE_SIZE
+/** The biomes on the map */
+enum MapBiome
+  Barrens
+  Fields
+  Forest
+  Islands
+  Mountains
+  
+/** How the distance limit for being in the center */
+constant centerDistLimitSq = (mapPlayAreaRadius * TILE_SIZE / 2) 
+    * (mapPlayAreaRadius * TILE_SIZE / 2)
+/** Get the biome of a given loc */
+function vec2.getBiome() returns MapBiome
+  var biome = MapBiome.Fields
+  if this.lengthSq() > centerDistLimitSq
+    if this.x > 0
+      if this.y > 0
+        biome = MapBiome.Islands
+      else
+        biome = MapBiome.Barrens
+    else 
+      if this.y > 0
+        biome = MapBiome.Mountains
+      else
+        biome = MapBiome.Forest
+  return biome
+
+// === Island Generation Factors ===
+constant islandBridgeWidth = TILE_SIZE * 2
+
+// === Node generation configuration ===
+constant genMinNodeRadius = 4
+constant genMaxNodeRadius = 7
+constant neighborExtraRadius = 11
+constant allowedNodeOverlap = 0
+
+/** Nodes are 'rooms' in the map, where the players will be able to build bases */
+class Node
+  // Node radius, in tiles
+  int radius = 0
+  // the center of this node, in tiles
+  int x
+  int y
+  // have paths been drawn from this node?
+  bool hasPaths = false
+
+  // Nodes to link to this one
+  LinkedList<Node> adjacent
+
+  construct(int x, int y)
+    this.x = x
+    this.y = y
+    adjacent = new LinkedList<Node>()
+  
+  construct(int x, int y, int radius)
+    this.x = x
+    this.y = y
+    adjacent = new LinkedList<Node>()
+    this.radius = radius
+
+  /** Get the tile position of the center of this node */
+  function getPos() returns vec2
+    return vec2(x.toReal(), y.toReal())
+  
+  /** Get the map position of this node */
+  function getMapPos() returns vec2
+    return getPos() * TILE_SIZE
+    
+/** The list of nodes that exist. Generated as part of the map creation process */
+public HashList<Node> mapNodes = new HashList<Node>()
+// Node sets for each zone
+HashSet<Node> islandNodes = new HashSet<Node>()
+HashSet<Node> fieldNodes = new HashSet<Node>()
+HashSet<Node> mountainNodes = new HashSet<Node>()
+HashSet<Node> forestNodes = new HashSet<Node>()
+HashSet<Node> barrenNodes = new HashSet<Node>()
+
+/** temp global variables for the Execute calls */
+int executeIter = 0
+HLIterator<Node> executeHlIter
+
+/** Master function that calls all the subfunctions */
+public function generateTerrain()
+  // setupBlankTerrain()
+  // initializeTerrainNodes()
+  // Now do each area
+  // generateIslands()
+  // generateForest()
+  // generateMountains()
+  // generateBarrens()
+  // generateFields()
+  // Need to connect the nodes
+  // connectNodes()
+  // Mountains are risen after all is done
+  // raiseMountains()
+
+/** Raises all of the terrain to hide the shallow water and sets up the intial pathing */
+function setupBlankTerrain()
+  TerrainDeformCrater(0, 0, TILE_SIZE * mapSize, -TILE_SIZE, 0, true)
+  let pathingRadius = mapPlayAreaRadius * (TILE_SIZE / PATHING_INCREMENT).round()
+  executeIter = -pathingRadius
+  executeWhile(10, () -> executeIter < pathingRadius) ->
+    let y = executeIter
+    for x = -pathingRadius to pathingRadius
+      SetTerrainPathable(x * PATHING_INCREMENT, y * PATHING_INCREMENT, 
+        PATHING_TYPE_BUILDABILITY, true)
+      SetTerrainPathable(x * PATHING_INCREMENT, y * PATHING_INCREMENT, 
+        PATHING_TYPE_FLOATABILITY, false)
+    executeIter++    
+
+/** Sets up all the nodes that will be used in the map. */
+function initializeTerrainNodes() 
+  // This is going to be a simple, node-based generation algorithm. We're going to scatter out a 
+  // bunch of nodes that have a minimum distance between them, then call those our rooms. These 
+  // will be clearings, etc in the different biomes. Then we will connect nodes to the closest 
+  // other nodes. This way we gaurantee that there's paths to everywhere!
+
+  // Start with nodes on the edges and the barriers between different biomes
+  let spawnDistance = (mapSize div 2) - 6
+  let spawnOffset = mapSize div 4
+  mapNodes.add(
+    new Node(0,0, (mapPlayAreaRadius / 2).round()), // center area will be one huge node
+    // West Spawns
+    new Node(-spawnDistance, spawnOffset, 6),
+    new Node(-spawnDistance, 0, 6),
+    new Node(-spawnDistance, -spawnOffset, 6),
+    // East Spawns
+    new Node(spawnDistance, spawnOffset, 6),
+    new Node(spawnDistance, 0, 6),
+    new Node(spawnDistance, -spawnOffset, 6),
+    // South spawns
+    new Node(spawnOffset, -spawnDistance, 6),
+    new Node(0, -spawnDistance, 6),
+    new Node(-spawnOffset, -spawnDistance, 6),
+    // North spawns
+    new Node(spawnOffset, spawnDistance, 6),
+    new Node(0, spawnDistance, 6),
+    new Node(-spawnOffset, spawnDistance, 6)
+  )
+
+  // Now add random nodes
+  // While we haven't failed too many times to place a node...
+  executeIter = 0
+  executeWhile(5, () -> executeIter < 40) ->
+    let newNode = new Node(GetRandomInt(-spawnDistance, spawnDistance), 
+        GetRandomInt(-spawnDistance, spawnDistance), 
+        GetRandomInt(genMinNodeRadius, genMaxNodeRadius))
+    var conflict = false
+    // Check if it's too close to the other nodes in the world.
+    for Node node in mapNodes
+      let radLimit = newNode.radius + node.radius - allowedNodeOverlap
+      if newNode.getPos().distanceTo(node.getPos()) < radLimit
+        conflict = true
+        break
+    if conflict
+      executeIter++ 
+      destroy newNode
+    else
+      // success!
+      mapNodes.add(newNode)
+      // Also calculate the biome too
+      switch newNode.getMapPos().getBiome()
+        case Barrens
+          barrenNodes.add(newNode)
+        case Fields
+          fieldNodes.add(newNode)
+        case Forest
+          forestNodes.add(newNode)
+        case Islands
+          islandNodes.add(newNode)
+        case Mountains
+          mountainNodes.add(newNode)
+      executeIter = 0
+
+  // Calculate the neighbors
+  executeIter = 0
+  executeWhile(5, () -> executeIter < mapNodes.size()) ->
+    let start = mapNodes.get(executeIter)
+    for target in mapNodes
+      let radLimit = start.radius + target.radius + neighborExtraRadius
+      if start != target and start.getPos().distanceTo(target.getPos()) < radLimit
+        start.adjacent.add(target)
+    executeIter++
+  
+
+/** Creates all of the island terrain */
+function generateIslands() 
+  SetTerrainType(quarterMap, quarterMap, TerrainType.sunken_Ruins_Sand, -1, 
+      (mapSize / 4).round() + 1, 1)
+  // First we sink the entire islands section
+  executeIter = 0
+  executeWhile(8, () -> executeIter < mapSize div 2) ->
+    let y = executeIter
+    for x = 0 to mapSize div 2
+      // only deform if its not in the center circle
+      if (x > (mapPlayAreaRadius / 2) and y > (mapPlayAreaRadius / 2)) 
+          or (vec2(x.toReal(), y.toReal()).distanceTo(vec2(0,0)) > mapPlayAreaRadius / 2)
+        TerrainDeformCrater(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, 0, true)
+        // update pathing
+        for pathy = 0 to 3
+          for pathx = 0 to 3
+            let posx = x * TILE_SIZE + PATHING_INCREMENT * (pathx - 1.5)
+            let posy = y * TILE_SIZE + PATHING_INCREMENT * (pathy - 1.5)
+            SetTerrainPathable(posx, posy, PATHING_TYPE_BUILDABILITY, false)
+            SetTerrainPathable(posx, posy, PATHING_TYPE_WALKABILITY, false)
+            SetTerrainPathable(posx, posy, PATHING_TYPE_FLOATABILITY, true)
+    executeIter++
+  
+  // Now extrude the islands - update height and pathing
+  executeHlIter = islandNodes.iterator()
+  executeWhile(1, () -> executeHlIter.hasNext()) ->
+    let node = executeHlIter.next()
+    TerrainDeformCrater(node.x * TILE_SIZE, node.y * TILE_SIZE, node.radius * TILE_SIZE * 1.2, 
+        -TILE_SIZE * 1.5, 0, true)
+    SetTerrainType(node.x * TILE_SIZE, node.y * TILE_SIZE, TerrainType.sunken_Ruins_Grass, 
+        -1, node.radius - 1, 0)
+    // Change the pathing by doing it in one corner, then mirror it around the circle.
+    forPositionsInCircle(node.getMapPos(), node.radius * TILE_SIZE, PATHING_INCREMENT) p ->
+      SetTerrainPathable(p.x, p.y, PATHING_TYPE_WALKABILITY, true)
+      SetTerrainPathable(p.x, p.y, PATHING_TYPE_BUILDABILITY, true)
+      SetTerrainPathable(p.x, p.y, PATHING_TYPE_FLOATABILITY, false)
+    
+/** Generate the forest trees and clearings */
+function generateForest()
+  SetTerrainType(-quarterMap, -quarterMap, TerrainType.ashenvale_Leaves, -1, 
+      (mapSize / 4).round() + 1, 1)
+  let forestRect = Rect(-mapSize * TILE_SIZE / 2, -mapSize * TILE_SIZE / 2, 0, 0)
+  // Place the trees
+  execute() ->
+    let centerDist = (mapPlayAreaRadius * TILE_SIZE / 2) * (mapPlayAreaRadius * TILE_SIZE / 2)
+    forPositionsInRect(forestRect, TILE_SIZE) pos ->
+      if pos.lengthSq() > centerDist
+        CreateDestructableZ(kDID_Tree_Forest, 
+          pos.x, pos.y, WATER_DEPRESSION,
+          GetRandomDirectionDeg(), GetRandomReal(0.9, 1.4), GetRandomInt(0, 9))
+        
+  // Carve out the zones
+  execute() ->
+    for Node node in forestNodes
+      SetTerrainType(node.getMapPos().x, node.getMapPos().y, TerrainType.ashenvale_Grass,
+          -1, node.radius, 0)
+      forDestructableInCircle(node.getMapPos(), node.radius * TILE_SIZE) d ->
+        d.remove()
+
+/** Generate the mountains and the snowy clearings.  */
+function generateMountains()
+  SetTerrainType(-quarterMap, quarterMap, TerrainType.lordaeron_Winter_Rock, -1, 
+      (mapSize / 4).round() + 1, 1)
+  // First make it all unpathable
+  executeIter = 0
+  executeWhile(6, () -> executeIter < mapSize div 2) ->
+    let y = executeIter
+    for x = 0 to (mapSize div 2)
+      if (x > (mapPlayAreaRadius / 2) and y > (mapPlayAreaRadius / 2)) 
+            or (vec2(x.toReal(), y.toReal()).length() > mapPlayAreaRadius / 2)
+        // update pathing
+        for pathy = 0 to 3
+          for pathx = 0 to 3
+            let posx = -x * TILE_SIZE + PATHING_INCREMENT * (pathx - 1.5)
+            let posy = y * TILE_SIZE + PATHING_INCREMENT * (pathy - 1.5)
+            SetTerrainPathable(posx, posy, PATHING_TYPE_BUILDABILITY, false)
+            SetTerrainPathable(posx, posy, PATHING_TYPE_WALKABILITY, false)
+    executeIter++
+  // Terrain nodes and make them pathable
+  executeHlIter = mountainNodes.iterator()
+  executeWhile(1, () -> executeHlIter.hasNext()) ->
+    let node = executeHlIter.next()
+    SetTerrainType(node.getMapPos().x, node.getMapPos().y, TerrainType.lordaeron_Winter_Snow, 
+        -1, node.radius + 1, 0)
+    forPositionsInCircle(node.getMapPos(), node.radius * TILE_SIZE, PATHING_INCREMENT) p -> 
+      SetTerrainPathable(p.x, p.y, PATHING_TYPE_WALKABILITY, true)
+      SetTerrainPathable(p.x, p.y, PATHING_TYPE_BUILDABILITY, true)
+
+/** Mountains are raises at the end, since it uses the pathing of the square to raise it.
+ *
+ *  Mountain height is based off distance to neighboring biome or clearing.
+ */
+function raiseMountains()
+  executeIter = 0
+  executeWhile(6, () -> executeIter < mapSize div 2) ->
+    let y = executeIter
+    for x = 0 to (mapSize div 2)
+      if (x > (mapPlayAreaRadius / 2) and y > (mapPlayAreaRadius / 2)) 
+            or (vec2(x.toReal(), y.toReal()).length() > mapPlayAreaRadius / 2)
+        let terrain = GetTerrainType(-x * TILE_SIZE, y * TILE_SIZE)
+        if terrain == TerrainType.lordaeron_Winter_Rock
+          var pos = vec2(-x.toReal(), y.toReal())
+          var minDist = min(
+            pos.length() - (mapPlayAreaRadius / 2),
+            y.toReal(),
+            x.toReal())
+          for Node node in mountainNodes
+            let dist = node.getPos().distanceTo(pos) - node.radius
+            if dist < minDist
+              minDist = dist
+          if minDist > 0
+            TerrainDeformCrater(-x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE / 2.0, 
+                -TILE_SIZE * (minDist / 2.0 + GetRandomReal(0.7, 1.5)), 0, true)
+    executeIter++
+
+/** Create the barrens*/    
+function generateBarrens()
+  SetTerrainType(quarterMap, -quarterMap, TerrainType.barrens_Desert, -1,
+      (mapSize / 4).round() + 1, 1)
+  execute() ->
+    for Node node in barrenNodes
+      SetTerrainType(node.getMapPos().x, node.getMapPos().y,
+          TerrainType.lordaeron_Summer_Dirt, -1, node.radius, 0)
+
+/** */    
+function generateFields()
+  SetTerrainType(0, 0, TerrainType.lordaeron_Summer_Grass, -1, (mapPlayAreaRadius / 2).round(), 0)
+
+/** This connects all of the nodes to each other, making the paths different for each biome */    
+function connectNodes()
+  // Create the connections between every node.
+  executeHlIter = mapNodes.iterator()
+  executeWhile(1, () -> executeHlIter.hasNext()) ->
+    let node = executeHlIter.next()
+    for neighbor in node.adjacent
+      // if this is in the island area and they don't overlap, then we draw a line
+      if not neighbor.hasPaths 
+          and node.getPos().distanceTo(neighbor.getPos()) > node.radius + neighbor.radius
+        let start = node.getMapPos().moveTowards(neighbor.getMapPos(), 
+            node.radius * TILE_SIZE - (TILE_SIZE / 2))
+        let target = neighbor.getMapPos().moveTowards(start, 
+            neighbor.radius * TILE_SIZE - (TILE_SIZE / 2))
+        forPositionsInLine(start, target, TILE_SIZE) pos ->
+          switch pos.getBiome()
+            case Islands
+              TerrainDeformCrater(pos.x, pos.y,
+                  TILE_SIZE * 2, -TILE_SIZE / 4, 0, true)
+              SetTerrainType(pos.x, pos.y,
+                  TerrainType.sunken_Ruins_Small_Bricks, -1, 1, 0)
+              // pathing updates
+              forPositionsInCircle(pos, islandBridgeWidth, PATHING_INCREMENT) pos2 ->
+                SetTerrainPathable(pos2.x, pos2.y, PATHING_TYPE_WALKABILITY, true)
+            case Forest
+              SetTerrainType(pos.x, pos.y, TerrainType.ashenvale_Vines, -1, 2, 0)
+              forDestructableInCircle(pos, TILE_SIZE * 1.5) des ->
+                des.remove()
+            case Mountains
+              SetTerrainType(pos.x, pos.y,
+                TerrainType.lordaeron_Winter_Snow, -1, 2, 0)
+              // pathing updates
+              forPositionsInCircle(pos, TILE_SIZE, PATHING_INCREMENT) pos2 ->
+                SetTerrainPathable(pos2.x, pos2.y, PATHING_TYPE_WALKABILITY, true)
+                SetTerrainPathable(pos2.x, pos2.y, PATHING_TYPE_BUILDABILITY, true)
+              // Remove destructables, as the forest may have leaked 
+              forDestructableInCircle(pos, TILE_SIZE * 1.5) des ->
+                des.remove()
+            case Barrens
+              SetTerrainType(pos.x, pos.y,
+                TerrainType.lordaeron_Summer_Dirt, -1, 2, 0)
+              // Remove destructables, as the forest may have leaked 
+              forDestructableInCircle(pos, TILE_SIZE * 1.5) des ->
+                des.remove()
+            case Fields
+              SetTerrainType(pos.x, pos.y, 
+                TerrainType.lordaeron_Summer_Dirt, -1, 2, 0)
+    // remove this node from the neighbors set to not redraw paths
+    node.hasPaths = true
+
+

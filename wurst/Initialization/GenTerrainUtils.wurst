@@ -70,7 +70,7 @@ public function forPositionsInCircle(vec2 center, real radius, real increment, P
         pa.run(center + (vec2(-1, -1) * offset))
 
 public function forPositionsInLine(vec2 start, vec2 target, real increment, PositionAction pa)
-  // steps are floored to not overshoot. We then shift the iner actions into the center
+  // steps are floored to not overshoot. We then shift the inner actions into the center
   let distance = start.distanceTo(target)
   let steps = (distance / increment).floor()
   var difference = distance - (steps * increment)

@@ -32,8 +32,6 @@ function setAlliances()
       SetPlayerAllianceStateBJ(players[i], kPlayer_King, bj_ALLIANCE_ALLIED_VISION)
       SetPlayerAllianceStateBJ(kPlayer_King, players[i], bj_ALLIANCE_ALLIED_VISION)
       SetPlayerAllianceStateBJ(kPlayer_Kingdom, players[i], bj_ALLIANCE_ALLIED_ADVUNITS)
-  
-  
   // MultiboardSuppressDisplay(false)
 
 function setCamBounds()
@@ -54,6 +52,6 @@ function createUnits()
       SetCameraPositionForPlayer(players[i], pos.x, pos.y)
   
   for i = 1 to 12
-    let pos = mapNodes.get(i).getMapPos()
+    let pos = kRect_PlayArea.randomPoint()
     createUnit(players[0], 'hfoo', pos, (0.0).asAngleDegrees())
       ..issuePointOrder("move", vec2(0,0))
