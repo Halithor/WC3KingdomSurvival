@@ -2,6 +2,7 @@ package Attributes
 
 import public AttributeSystem_Globals
 import public AttributeSystem
+import HashMap
 
 // Bonus percentage of experience gained
 public constant ATR_EXP_GAIN = new AttributeId(compiletime(ID_GEN_ATTR.next()))
@@ -21,3 +22,19 @@ public constant ATR_DMG_RESIST_SPELL_PERC = new AttributeId(compiletime(ID_GEN_A
 public constant ATR_DMG_RESIST_PHYSICAL_FLAT = new AttributeId(compiletime(ID_GEN_ATTR.next()))
 public constant ATR_DMG_RESIST_PHYSICAL_PERC = new AttributeId(compiletime(ID_GEN_ATTR.next()))
 
+public constant IterableMap<AttributeId, int> defaultHeroStats = new IterableMap<AttributeId, int>()
+  ..put(ATR_LIFE_MAX_FLAT, 100)
+  ..put(ATR_LIFE_REGEN_FLAT, 50)
+  ..put(ATR_MANA_MAX_FLAT, 50)
+  ..put(ATR_MANA_REGEN_FLAT, 50)
+  ..put(ATR_ARMOR_FLAT, 0)
+  ..put(ATR_ATK_CD_FLAT, 250) // 2.5 seconds
+  ..put(ATR_ATK_DMG_FLAT, 2)
+  ..put(ATR_ATK_DICE_FLAT, 1)
+  ..put(ATR_ATK_DICE_SIDES_FLAT, 5)
+  ..put(ATR_MOVESPEED_FLAT, 280)
+  ..put(ATR_AGILITY_FLAT, 1)
+  ..put(ATR_INTELLIGENCE_FLAT, 1)
+  ..put(ATR_STRENGTH_FLAT, 1)
+  ..put(ATR_PRIMARY_ATR, 1)
+  

@@ -5,13 +5,15 @@ import Globals
 import RegisterEvents
 import ClosureTimers
 import UnitUtils
+import Attributes
 
 init
   kPlayer_Kingdom.setName("The Kingdom")
   setCamBounds()    
   generateTerrain()
   setAlliances()
-  DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 5, "|cffaa0000Please wait as the game finishes initialization...")
+  DisplayTimedTextToForce(bj_FORCE_ALL_PLAYERS, 5, 
+      "|cffaa0000Please wait as the game finishes initialization...")
   for i = 0 to bj_MAX_PLAYER_SLOTS - 1
     let p = players[i]
     CreateFogModifierRectSimple(p, FOG_OF_WAR_VISIBLE, GetPlayableMapRect(), true)
@@ -40,10 +42,11 @@ function setCamBounds()
 
 function createUnits()
   // Create king, he gets items that others don't
-  createKingdomUnit(kPlayer_King, kUID_Villager, kRect_PlayArea.getCenter(), GetRandomDirectionDeg().asAngleDegrees())
-        ..setProperName(kPlayer_King.getName())
-        ..addItemById(kIID_Building_Castle)
-        ..setName("King")
+  createKingdomUnit(kPlayer_King, kUID_Villager, kRect_PlayArea.getCenter(), 
+      GetRandomDirectionDeg().asAngleDegrees(), defaultHeroStats)
+    ..setProperName(kPlayer_King.getName())
+    ..addItemById(kIID_Building_Castle)
+    ..setName("King")
   SetCameraPositionForPlayer(kPlayer_King, kRect_PlayArea.getCenter().x, kRect_PlayArea.getCenter().y)
   for i = 1 to bj_MAX_PLAYER_SLOTS
     if players[i].isIngame()

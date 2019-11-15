@@ -3,18 +3,22 @@ package HeroAbilityDefinitions
 import AbilityObjEditing
 import Globals
 import TooltipUtils
-import ObjectIdGenerator
-import ObjectIds
-import BuffObjEditing
 import Assets
+import ClosureEvents
+import Attributes
+import HashMap
 
-function constArmorBonus(int lvl) returns real
-  return (lvl div 2) + 1.0
+function constArmorBonus(int lvl) returns int
+  if lvl == 0
+    return 0
+  return (lvl div 2) + 1
+
 function constDmgReduced(int lvl) returns real
   var val = lvl * 0.02
   if lvl == 10
     val += 0.05
   return val
+
 function constHpRegen(int lvl) returns real
   var val = lvl * 0.15
   if lvl > 8
@@ -75,17 +79,17 @@ function genHeroAbilities()
   // let constBuffId = BUFF_ID_GEN.next()
   let constEffectList = effectList(
     effectPair("Strength", lvl -> lvl.toString()),
-    effectPair("Armor", lvl -> constArmorBonus(lvl).toInt().toString()),
+    effectPair("Armor", lvl -> constArmorBonus(lvl).toString()),
     effectPair("HP / sec", lvl -> constHpRegen(lvl).toString(2)),
     effectPair("Damage Reduced", lvl -> asPercent(constDmgReduced(lvl)))
   )
   new AbilityDefinitionAttributeModifierSkill(kAID_HeroConstitution)
+    ..setLevels(10)
     ..presetAgilityBonus(lvl -> 0)
     ..presetIntelligenceBonus(lvl -> 0)
     ..presetStrengthBonus(lvl -> 0)
     ..presetHideButton(lvl -> true)
     ..setHeroAbility(true)
-    ..setLevels(10)
     ..setName("Constitution")
     ..presetHotkey("Q")
     ..presetTooltipNormal((lvl) -> ttNormal("Constitution", lvl))
@@ -111,12 +115,12 @@ function genHeroAbilities()
     effectPair("Move Speed", lvl -> asPercent(dexMSBonus(lvl)))
   )
   new AbilityDefinitionAttributeModifierSkill(kAID_HeroDexterity)
+    ..setLevels(10)
     ..presetAgilityBonus(lvl -> 0)
     ..presetIntelligenceBonus(lvl -> 0)
     ..presetStrengthBonus(lvl -> 0)
     ..presetHideButton(lvl -> true)
     ..setHeroAbility(true)
-    ..setLevels(10)
     ..setName("Dexterity")
     ..presetHotkey("W")
     ..presetTooltipNormal(lvl -> ttNormal("Dexterity", lvl))
@@ -144,12 +148,12 @@ function genHeroAbilities()
     effectPair("Experience Gain", lvl -> asPercent(intExpGain(lvl)))
   )
   new AbilityDefinitionAttributeModifierSkill(kAID_HeroIntellect)
+    ..setLevels(10)
     ..presetAgilityBonus(lvl -> 0)
     ..presetIntelligenceBonus(lvl -> 0)
     ..presetStrengthBonus(lvl -> 0)
     ..presetHideButton(lvl -> true)
     ..setHeroAbility(true)
-    ..setLevels(10)
     ..setName("Intellect")
     ..presetHotkey("E")
     ..presetTooltipNormal(lvl -> ttNormal("Intellect", lvl))
@@ -172,12 +176,12 @@ function genHeroAbilities()
     effectPair("Intelligence", lvl -> lvl.toString())
   )
   new AbilityDefinitionAttributeModifierSkill(kAID_HeroLuck)
+    ..setLevels(10)
     ..presetAgilityBonus(lvl -> 0)
     ..presetIntelligenceBonus(lvl -> 0)
     ..presetStrengthBonus(lvl -> 0)
     ..presetHideButton(lvl -> true)
     ..setHeroAbility(true)
-    ..setLevels(10)
     ..setName("Luck")
     ..presetHotkey("R")
     ..presetTooltipNormal(lvl -> ttNormal("Luck", lvl))
@@ -193,3 +197,29 @@ function genHeroAbilities()
     ..setTargetAttachmentPoint("")
     ..presetTargetsAllowed(lvl -> "invulnerable,self,vulnerable")
     ..setRequirements("")
+
+
+
+init 
+  EventListener.add(EVENT_PLAYER_HERO_SKILL) () ->
+    let skill = EventData.getLearnedSkill()
+    let lvl = EventData.getLearnedSkillLevel()
+    let attrs = new  IterableMap<AttributeId, int>()
+    if skill == kAID_HeroConstitution
+      attrs
+        ..put(ATR_STRENGTH_FLAT, 1)
+        ..put(ATR_ARMOR_FLAT, (constArmorBonus(lvl) - constArmorBonus(lvl - 1)))
+        ..put(ATR_LIFE_REGEN_FLAT, 
+          ((constHpRegen(lvl) - constHpRegen(lvl - 1)) * 100.0).round())
+        ..put(ATR_DMG_RESIST_PHYSICAL_PERC,
+          ((constDmgReduced(lvl) - constDmgReduced(lvl - 1)) * 100.0).round())
+    else if skill == kAID_HeroDexterity
+      skip
+    else if skill == kAID_HeroIntellect
+      skip
+    else if skill == kAID_HeroLuck
+      skip
+    EventData.getTriggerUnit().addAttributeList(attrs)
+    
+  // registerPlayerEvent(EVENT_PLAYER_HERO_SKILL, () -> "")
+    
