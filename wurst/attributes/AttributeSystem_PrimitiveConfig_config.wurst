@@ -1,7 +1,7 @@
 package AttributeSystem_PrimitiveConfig_config
 
 @config constant lifeMaxPerStr = 12.0
-@config constant lifeRegenPerStr = 0.2
+@config constant lifeRegenPerStr = 0.01
 @config constant manaMaxPerInt = 4.0
 @config constant manaRegenPerInt = 0.06
 @config constant armorPerAgi = (1.0 / 7.0)

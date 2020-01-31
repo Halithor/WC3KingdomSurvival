@@ -294,7 +294,7 @@ function raiseMountains()
             or (vec2(x.toReal(), y.toReal()).length() > mapPlayAreaRadius / 2)
         let terrain = GetTerrainType(-x * TILE_SIZE, y * TILE_SIZE)
         if terrain == TerrainType.lordaeron_Winter_Rock
-          var pos = vec2(-x.toReal(), y.toReal())
+          let pos = vec2(-x.toReal(), y.toReal())
           var minDist = min(
             pos.length() - (mapPlayAreaRadius / 2),
             y.toReal(),

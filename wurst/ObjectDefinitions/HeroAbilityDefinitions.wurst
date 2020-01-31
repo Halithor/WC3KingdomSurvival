@@ -49,6 +49,7 @@ function dexIAS(int lvl) returns real
     case 10
       val = 0.5
   return val
+
 function dexMSBonus(int lvl) returns real
   var val = lvl * 0.015
   if lvl > 8
@@ -214,11 +215,21 @@ init
         ..put(ATR_DMG_RESIST_PHYSICAL_PERC,
           ((constDmgReduced(lvl) - constDmgReduced(lvl - 1)) * 100.0).round())
     else if skill == kAID_HeroDexterity
-      skip
+      attrs
+        ..put(ATR_AGILITY_FLAT, 1)
+        ..put(ATR_MOVESPEED_PERC, ((dexMSBonus(lvl) - dexMSBonus(lvl -1 )) * 100).round())
+        ..put(ATR_ATK_CD_PERC, ((dexIAS(lvl) - dexIAS(lvl - 1))* 100).round())
     else if skill == kAID_HeroIntellect
-      skip
+      attrs
+        ..put(ATR_INTELLIGENCE_FLAT, 1)
+        ..put(ATR_MANA_REGEN_PERC, ((intManaRegen(lvl) - intManaRegen(lvl - 1))* 100).round())
+        ..put(ATR_MANA_MAX_FLAT, (intManaMax(lvl) - intManaMax(lvl - 1)))
+        ..put(ATR_EXP_GAIN, ((intExpGain(lvl) - intExpGain(lvl - 1))* 100).round())
     else if skill == kAID_HeroLuck
-      skip
+      attrs
+        ..put(ATR_STRENGTH_FLAT, 1)
+        ..put(ATR_AGILITY_FLAT, 1)
+        ..put(ATR_INTELLIGENCE_FLAT, 1)
     EventData.getTriggerUnit().addAttributeList(attrs)
     
   // registerPlayerEvent(EVENT_PLAYER_HERO_SKILL, () -> "")
